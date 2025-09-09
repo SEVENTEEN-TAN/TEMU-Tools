@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TEMU小助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            min-width: 400px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .status-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .status-card.logged-in {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .user-info {
+            text-align: left;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .user-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .user-info-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .user-info-value {
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: 500;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.1);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🛍️</div>
+        <h1 class="title">TEMU小助手</h1>
+        
+        <!-- 未登录状态 -->
+        <div id="notLoggedIn" class="status-card">
+            <div class="status-label">当前状态</div>
+            <div class="status-value">未登录</div>
+        </div>
+        
+        <!-- 已登录状态 -->
+        <div id="loggedIn" class="status-card logged-in hidden">
+            <div class="status-label">当前状态</div>
+            <div class="status-value">✅ 已登录</div>
+            <div class="user-info">
+                <div class="user-info-item">
+                    <span class="user-info-label">用户名：</span>
+                    <span class="user-info-value" id="username">-</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">邮箱：</span>
+                    <span class="user-info-value" id="email">-</span>
+                </div>
+                <div class="user-info-item">
+                    <span class="user-info-label">用户ID：</span>
+                    <span class="user-info-value" id="userId">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 登录按钮 -->
+        <button id="loginBtn" class="login-btn">
+            <span id="loginBtnText">登录 TEMU</span>
+            <span id="loginBtnLoading" class="loading hidden"></span>
+        </button>
+        
+        <!-- 功能按钮（登录后显示） -->
+        <div id="actionButtons" class="action-buttons hidden">
+            <button class="action-btn">订单管理</button>
+            <button class="action-btn">收藏夹</button>
+            <button class="action-btn">优惠券</button>
+            <button class="action-btn">更多功能</button>
+        </div>
+    </div>
+    
+    <script src="renderer.js"></script>
+</body>
+</html>

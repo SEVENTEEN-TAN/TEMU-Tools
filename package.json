@@ -1,0 +1,32 @@
+{
+  "name": "temu-assistant",
+  "version": "1.0.0",
+  "description": "TEMU小助手 - 便捷登录和功能扩展工具",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": ["temu", "assistant", "electron"],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.temu.assistant",
+    "productName": "TEMU小助手",
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
