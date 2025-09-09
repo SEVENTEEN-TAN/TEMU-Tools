@@ -1,0 +1,135 @@
+{
+  "timestamp": "2025-09-09T22:57:17.000Z",
+  "scanVersion": "1.0.0",
+  "projectName": "TEMU小助手",
+  "projectPath": "C:\\Users\\Administrator\\Desktop\\TEMU小助手",
+  "scanCoverage": {
+    "totalFiles": 12,
+    "scannedFiles": 12,
+    "coveragePercentage": 100,
+    "excludedFiles": ["node_modules/**", "dist/**", "build/**", ".git/**"]
+  },
+  "modules": [
+    {
+      "name": "核心模块",
+      "path": "./核心模块",
+      "type": "business_logic",
+      "language": "javascript",
+      "status": "complete",
+      "entryPoints": [
+        "main.js",
+        "renderer.js", 
+        "preload.js"
+      ],
+      "interfaces": [
+        "electronAPI.openLogin()",
+        "electronAPI.getLoginStatus()",
+        "electronAPI.logout()",
+        "electronAPI.switchSite()"
+      ],
+      "testCoverage": "manual",
+      "hasTests": false,
+      "hasConfig": true,
+      "keyFiles": [
+        "main.js",
+        "renderer.js", 
+        "preload.js",
+        "index.html",
+        "encoding-fix.js"
+      ],
+      "coverage": {
+        "entry": true,
+        "interfaces": true,
+        "dataModels": true,
+        "testing": false,
+        "documentation": true
+      }
+    },
+    {
+      "name": "登录功能",
+      "path": "./doc/登录功能",
+      "type": "documentation",
+      "language": "markdown",
+      "status": "complete", 
+      "entryPoints": [
+        "登录API.md"
+      ],
+      "interfaces": [
+        "POST /bg/quiet/api/mms/userInfo"
+      ],
+      "testCoverage": "documented",
+      "hasTests": false,
+      "hasConfig": false,
+      "keyFiles": [
+        "登录API.md"
+      ],
+      "coverage": {
+        "entry": true,
+        "interfaces": true,
+        "dataModels": true,
+        "testing": false,
+        "documentation": true
+      }
+    },
+    {
+      "name": "商品管理",
+      "path": "./doc/获取在售商品",
+      "type": "documentation",
+      "language": "markdown", 
+      "status": "complete",
+      "entryPoints": [
+        "获取在售商品.md"
+      ],
+      "interfaces": [
+        "POST /visage-agent-seller/product/skc/pageQuery"
+      ],
+      "testCoverage": "documented",
+      "hasTests": false,
+      "hasConfig": false,
+      "keyFiles": [
+        "获取在售商品.md"
+      ],
+      "coverage": {
+        "entry": true,
+        "interfaces": true, 
+        "dataModels": true,
+        "testing": false,
+        "documentation": true
+      }
+    }
+  ],
+  "technologies": {
+    "electron": "^27.0.0",
+    "javascript": "ES6+",
+    "html5": "latest",
+    "css3": "latest"
+  },
+  "architecture": {
+    "pattern": "Electron Multi-Process",
+    "mainProcess": "main.js",
+    "rendererProcess": "renderer.js",
+    "preloadScript": "preload.js",
+    "communication": "IPC"
+  },
+  "features": {
+    "cookieManagement": true,
+    "multiSiteAuth": true,
+    "windowManagement": true,
+    "apiIntegration": true,
+    "userInterface": true
+  },
+  "gaps": [],
+  "nextSteps": [
+    "添加单元测试框架",
+    "实现商品管理功能模块",
+    "添加错误监控和日志记录",
+    "完善用户体验优化",
+    "添加自动化测试"
+  ],
+  "truncated": false,
+  "scanLimits": {
+    "maxFiles": 1000,
+    "maxFileSize": "2MB",
+    "timeout": "5min"
+  }
+}

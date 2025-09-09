@@ -3,7 +3,12 @@
     "allow": [
       "mcp__chrome-mcp__get_windows_and_tabs",
       "mcp__chrome-mcp__chrome_network_debugger_start",
-      "mcp__chrome-mcp__chrome_navigate"
+      "mcp__chrome-mcp__chrome_navigate",
+      "mcp__chrome-mcp__chrome_network_debugger_stop",
+      "mcp__chrome-mcp__chrome_network_capture_start",
+      "mcp__chrome-mcp__chrome_network_capture_stop",
+      "mcp__chrome-mcp__chrome_inject_script",
+      "mcp__chrome-mcp__chrome_console"
     ],
     "deny": [],
     "ask": []
