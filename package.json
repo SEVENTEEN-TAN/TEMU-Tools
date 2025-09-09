@@ -4,8 +4,10 @@
   "description": "TEMU小助手 - 便捷登录和功能扩展工具",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "dev": "electron . --dev",
+    "start": "chcp 65001 >nul && electron .",
+    "dev": "chcp 65001 >nul && electron . --dev",
+    "start:utf8": "cross-env NODE_OPTIONS=\"--encoding=utf8\" electron .",
+    "dev:utf8": "cross-env NODE_OPTIONS=\"--encoding=utf8\" electron . --dev",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },

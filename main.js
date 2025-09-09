@@ -1,4 +1,8 @@
-const { app, BrowserWindow, ipcMain, session, net } = require('electron');
+// 修复Windows控制台编码问题
+const { setConsoleEncoding } = require('./encoding-fix');
+setConsoleEncoding();
+
+const { app, BrowserWindow, ipcMain, session, net, Menu } = require('electron');
 const path = require('path');
 
 let mainWindow;
@@ -18,10 +22,14 @@ function createMainWindow() {
         resizable: true,
         minWidth: 1000,
         minHeight: 650,
-        title: 'TEMU小助手'
+        title: 'TEMU小助手',
+        autoHideMenuBar: true  // 自动隐藏菜单栏
     });
 
     mainWindow.loadFile('index.html');
+    
+    // 移除窗口的菜单栏
+    mainWindow.setMenuBarVisibility(false);
 
     // 默认打开开发者工具以便查看控制台
     mainWindow.webContents.openDevTools();
@@ -43,7 +51,8 @@ function createLoginWindow() {
             nodeIntegration: false,
             contextIsolation: true
         },
-        title: '跨境卖货平台登录'
+        title: '跨境卖货平台登录',
+        autoHideMenuBar: true  // 自动隐藏菜单栏
     });
 
     // 加载核心站点登录页面
@@ -573,7 +582,8 @@ ipcMain.handle('switch-site', async () => {
                 nodeIntegration: false,
                 contextIsolation: true
             },
-            title: '切换站点'
+            title: '切换站点',
+            autoHideMenuBar: true  // 自动隐藏菜单栏
         });
         
         // 监听新窗口创建事件（用于处理站点选择后的新窗口）
@@ -652,6 +662,9 @@ ipcMain.handle('switch-site', async () => {
 
 // 应用启动
 app.whenReady().then(() => {
+    // 移除默认菜单栏
+    Menu.setApplicationMenu(null);
+    
     createMainWindow();
 });
 
