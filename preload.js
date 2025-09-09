@@ -11,6 +11,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // 退出登录
     logout: () => ipcRenderer.invoke('logout'),
     
+    // 切换站点
+    switchSite: () => ipcRenderer.invoke('switch-site'),
+    
     // 监听登录成功事件
     onLoginSuccess: (callback) => {
         ipcRenderer.on('login-success', (event, userInfo) => {
@@ -18,8 +21,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
         });
     },
     
+    // 监听站点选择完成事件
+    onSiteSelected: (callback) => {
+        ipcRenderer.on('site-selected', (event, userInfo) => {
+            callback(userInfo);
+        });
+    },
+    
     // 移除所有监听器
     removeAllListeners: () => {
         ipcRenderer.removeAllListeners('login-success');
+        ipcRenderer.removeAllListeners('site-selected');
     }
 });
