@@ -1,0 +1,195 @@
+/**
+ * 全屏欢迎页面样式 - 白色背景版
+ */
+
+.welcome-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* 白色背景 */
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.welcome-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.welcome-content {
+    text-align: center;
+    padding: 60px 40px;
+    max-width: 680px;
+    width: 100%;
+}
+
+.welcome-logo {
+    font-size: 86px;
+    margin-bottom: 40px;
+    animation: float 3s ease-in-out infinite;
+    display: inline-block;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.welcome-title {
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    line-height: 1.3;
+    font-family: "Microsoft YaHei", "微软雅黑", "Segoe UI", system-ui, sans-serif;
+    color: #1a202c;
+    letter-spacing: -0.5px;
+}
+
+.welcome-subtitle {
+    font-size: 20px;
+    margin-bottom: 50px;
+    line-height: 1.6;
+    font-weight: 400;
+    font-family: "Microsoft YaHei", "微软雅黑", "Segoe UI", system-ui, sans-serif;
+    color: #4a5568;
+    letter-spacing: 0;
+}
+
+.welcome-actions {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+
+.welcome-login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 52px;
+    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
+    font-family: "Microsoft YaHei", "微软雅黑", "Segoe UI", system-ui, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-login-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.welcome-login-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5A67D8 0%, #6B46C1 100%);
+}
+
+.welcome-login-btn:hover::before {
+    left: 100%;
+}
+
+.welcome-login-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.welcome-login-btn .btn-icon {
+    font-size: 24px;
+    display: inline-block;
+}
+
+.welcome-login-btn .btn-text {
+    font-size: 17px;
+    font-weight: 500;
+    color: #FFFFFF;
+    white-space: nowrap;
+}
+
+/* 主应用容器动画 */
+.app-container {
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.app-container.hidden {
+    display: none;
+}
+
+/* 添加装饰性元素 */
+.welcome-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 70%;
+    height: 70%;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.welcome-container::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(circle, rgba(118, 75, 162, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .welcome-logo {
+        font-size: 72px;
+    }
+    
+    .welcome-title {
+        font-size: 40px;
+    }
+    
+    .welcome-subtitle {
+        font-size: 18px;
+    }
+    
+    .welcome-login-btn {
+        padding: 16px 40px;
+        font-size: 18px;
+    }
+}
+
+/* 高DPI屏幕优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .welcome-title,
+    .welcome-subtitle,
+    .welcome-login-btn {
+        -webkit-font-smoothing: subpixel-antialiased;
+        transform: translateZ(0);
+        will-change: transform;
+    }
+}

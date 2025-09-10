@@ -1,0 +1,108 @@
+<!-- 商品管理模块 HTML -->
+<div class="products-module">
+    <div class="module-header">
+        <h2 class="module-title">在售商品管理</h2>
+        <p class="module-subtitle">查看和导出您的在售商品数据</p>
+    </div>
+    
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="control-panel-wrapper">
+            <div class="control-panel-left">
+                <div class="products-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">商品总数</span>
+                        <span id="totalProductsCount" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">当前页数</span>
+                        <span id="currentPageInfo" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">更新时间</span>
+                        <span id="lastUpdateTime" class="stat-value">-</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="refreshProductsBtn" class="action-btn primary">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-text">刷新数据</span>
+                        <span class="btn-loading hidden"></span>
+                    </button>
+                    
+                    <button id="exportExcelBtn" class="action-btn secondary" disabled>
+                        <span class="btn-icon">📊</span>
+                        <span class="btn-text">导出Excel</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="control-panel-right">
+                <div id="statusIndicator" class="status-indicator">
+                    <span class="status-icon"></span>
+                    <span class="status-text">正在加载商品数据...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 商品列表表格 -->
+    <div class="products-table-container">
+        <div class="table-wrapper">
+            <table id="productsTable" class="products-table">
+                <thead>
+                    <tr>
+                        <th>商品ID</th>
+                        <th>商品名称</th>
+                        <th>商品编码</th>
+                        <th>价格</th>
+                        <th>库存</th>
+                        <th>状态</th>
+                        <th>创建时间</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 60px 20px; color: #718096;">
+                            <div style="font-size: 48px; margin-bottom: 16px;">📦</div>
+                            <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">正在加载商品数据</div>
+                            <div style="font-size: 14px;">请稍候...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 加载遮罩 -->
+        <div id="tableLoadingOverlay" class="table-loading-overlay hidden">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">正在获取在售商品数据...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 分页控制器 -->
+    <div class="pagination-controls">
+        <div class="pagination-info">
+            <span id="totalProductsInfo">共 0 件商品</span>
+            <span class="divider">|</span>
+            <span id="pageInfo">第 1 页</span>
+        </div>
+        
+        <div class="pagination-buttons">
+            <button id="prevPageBtn" class="page-btn" disabled>
+                <span>上一页</span>
+            </button>
+            
+            <div id="pageNumbers" class="page-numbers">
+                <!-- 动态生成页码 -->
+            </div>
+            
+            <button id="nextPageBtn" class="page-btn" disabled>
+                <span>下一页</span>
+            </button>
+        </div>
+    </div>
+</div>

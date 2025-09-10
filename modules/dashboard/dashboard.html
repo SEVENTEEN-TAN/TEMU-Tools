@@ -1,0 +1,65 @@
+<!-- 仪表板模块 HTML -->
+<div class="dashboard-module">
+    <div class="module-header">
+        <h2 class="module-title">仪表板</h2>
+        <p class="module-subtitle">系统数据概览</p>
+    </div>
+    
+    <!-- 数据统计卡片 -->
+    <div class="stats-section">
+        <h3 class="section-title">今日数据</h3>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="total-products">0</div>
+                    <div class="stat-label">在售商品</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="today-orders">0</div>
+                    <div class="stat-label">今日订单</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="today-sales">¥0</div>
+                    <div class="stat-label">今日销售额</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👁️</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="today-views">0</div>
+                    <div class="stat-label">今日浏览</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 快速操作 -->
+    <div class="quick-actions-section">
+        <h3 class="section-title">快速操作</h3>
+        <div class="actions-grid">
+            <button class="quick-action-btn" onclick="dashboardModule.refreshData()">
+                <span class="action-icon">🔄</span>
+                <span class="action-text">刷新数据</span>
+            </button>
+            <button class="quick-action-btn" onclick="moduleLoader.switchModule('products')">
+                <span class="action-icon">📦</span>
+                <span class="action-text">商品管理</span>
+            </button>
+            <button class="quick-action-btn" onclick="moduleLoader.switchModule('orders')">
+                <span class="action-icon">📋</span>
+                <span class="action-text">订单处理</span>
+            </button>
+            <button class="quick-action-btn" onclick="moduleLoader.switchModule('analytics')">
+                <span class="action-icon">📊</span>
+                <span class="action-text">数据分析</span>
+            </button>
+        </div>
+    </div>
+</div>

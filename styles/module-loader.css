@@ -1,0 +1,274 @@
+/**
+ * 模块加载器样式
+ */
+
+/* 模块容器 */
+.module-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: #f5f6fa;
+    overflow: hidden;
+}
+
+/* 模块插槽 */
+.module-slot {
+    flex: 1;
+    position: relative;
+    overflow: auto;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 模块内容基础样式 */
+.module-content {
+    min-height: 100%;
+    position: relative;
+}
+
+/* 加载状态 */
+.module-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: #718096;
+}
+
+.loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid #e2e8f0;
+    border-radius: 50%;
+    border-top-color: #667eea;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* 错误状态 */
+.module-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 40px;
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.error-message {
+    font-size: 16px;
+    color: #e53e3e;
+    margin-bottom: 24px;
+    max-width: 500px;
+}
+
+.retry-btn {
+    padding: 10px 24px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.retry-btn:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* 欢迎页面 */
+.welcome-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100%;
+    padding: 40px;
+}
+
+.welcome-content {
+    text-align: center;
+    max-width: 600px;
+}
+
+.welcome-content h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welcome-content p {
+    font-size: 16px;
+    color: #718096;
+    margin-bottom: 40px;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 24px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 200px;
+}
+
+.action-card:hover {
+    border-color: #667eea;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+}
+
+.action-icon {
+    font-size: 48px;
+}
+
+.action-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.action-desc {
+    font-size: 13px;
+    color: #718096;
+}
+
+/* 模块导航标签 */
+.module-nav {
+    display: flex;
+    gap: 8px;
+    padding: 0 20px;
+}
+
+.module-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.module-tab:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.module-tab.active {
+    background: white;
+    color: #667eea;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.module-tab-icon {
+    font-size: 16px;
+}
+
+.module-tab-name {
+    font-size: 13px;
+}
+
+.module-tab-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #f56565;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* 模块过渡动画 */
+.module-slot[data-module] {
+    animation: moduleSwitch 0.4s ease-in-out;
+}
+
+@keyframes moduleSwitch {
+    0% {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .module-nav {
+        overflow-x: auto;
+        padding: 10px;
+    }
+    
+    .module-tab {
+        white-space: nowrap;
+    }
+    
+    .welcome-content h1 {
+        font-size: 24px;
+    }
+    
+    .action-card {
+        min-width: 100%;
+    }
+}
