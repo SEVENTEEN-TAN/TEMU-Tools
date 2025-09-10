@@ -260,31 +260,50 @@ class ProductsModule {
             }
             
             this.showStatus('正在获取全部商品数据...', 'loading');
-            this.showMessage('开始获取全部商品数据，请稍候...', 'info');
+            console.log('\n========== 开始导出流程 ==========');
             
             // 获取全部商品数据
             const allProducts = await this.fetchAllProducts();
             
-            if (allProducts.length === 0) {
+            if (!allProducts || allProducts.length === 0) {
                 this.showMessage('没有可导出的商品数据', 'warning');
+                console.log('导出终止：没有商品数据');
                 return;
             }
             
-            this.showStatus(`正在导出 ${allProducts.length} 件商品...`, 'loading');
+            console.log(`\n准备导出 ${allProducts.length} 件商品到Excel`);
+            this.showStatus(`正在生成Excel文件 (${allProducts.length} 件商品)...`, 'loading');
             
+            // 调用主进程导出Excel
             const result = await window.electronAPI.exportProductsExcel(allProducts);
             
             if (result.success) {
+                console.log('✅ Excel导出成功！');
+                console.log(`文件路径: ${result.path}`);
+                console.log(`导出数量: ${allProducts.length} 件`);
+                console.log('========== 导出完成 ==========\n');
+                
                 this.showStatus('Excel导出成功', 'success');
-                this.showMessage(`Excel文件已保存至：\n${result.path}\n\n共导出 ${allProducts.length} 件商品`, 'success');
+                this.showMessage(
+                    `✅ Excel文件已保存\n\n` +
+                    `文件位置：${result.path}\n` +
+                    `导出数量：${allProducts.length} 件商品`, 
+                    'success'
+                );
             } else {
                 throw new Error(result.error || '导出失败');
             }
             
         } catch (error) {
-            console.error('导出Excel失败:', error);
-            this.showStatus('导出失败，请重试', 'error');
-            this.showMessage('导出Excel失败：' + error.message, 'error');
+            console.error('❌ 导出Excel失败:', error);
+            console.log('========== 导出失败 ==========\n');
+            
+            this.showStatus('导出失败', 'error');
+            this.showMessage(
+                `导出失败：${error.message}\n` +
+                `请检查网络连接后重试`, 
+                'error'
+            );
         } finally {
             // 恢复按钮状态
             if (exportBtn && this.state.products.length > 0) {
@@ -304,78 +323,110 @@ class ProductsModule {
      */
     async fetchAllProducts() {
         const allProducts = [];
-        const pageSize = 200; // 每页请求200条，减少请求次数
+        const pageSize = 200; // 每页请求200条
         let currentPage = 1;
-        let hasMore = true;
-        let totalPages = 1;
         let totalCount = 0;
+        let totalPages = 0;
         
         try {
-            while (hasMore && currentPage <= totalPages) {
-                this.showStatus(`正在获取第 ${currentPage}/${totalPages || '?'} 页数据...`, 'loading');
+            console.log('开始获取全部商品数据...');
+            
+            // 第一次请求，获取总数
+            const firstResult = await window.electronAPI.fetchProducts({
+                page: 1,
+                pageSize: pageSize,
+                skcTopStatus: 100  // 在售商品状态
+            });
+            
+            if (!firstResult.success || !firstResult.data) {
+                throw new Error(firstResult.error || '获取商品数据失败');
+            }
+            
+            // 获取总数和第一页数据
+            totalCount = firstResult.data.totalCount || 0;
+            const firstPageItems = firstResult.data.pageItems || [];
+            
+            if (totalCount === 0) {
+                console.log('没有商品数据');
+                return [];
+            }
+            
+            // 添加第一页数据
+            allProducts.push(...firstPageItems);
+            console.log(`第1页: 获取 ${firstPageItems.length} 条，累计 ${allProducts.length}/${totalCount}`);
+            
+            // 计算总页数
+            totalPages = Math.ceil(totalCount / pageSize);
+            console.log(`总商品数: ${totalCount}, 总页数: ${totalPages}, 每页: ${pageSize}`);
+            
+            // 如果总数很大，给用户一个提示
+            if (totalCount > 1000) {
+                this.showMessage(`检测到 ${totalCount} 件商品，正在获取全部数据，请耐心等待...`, 'info');
+            }
+            
+            // 更新进度
+            this.showStatus(`获取进度: 第 1/${totalPages} 页 (${allProducts.length}/${totalCount})`, 'loading');
+            
+            // 如果只有一页，直接返回
+            if (totalPages === 1) {
+                console.log('✅ 只有一页数据，获取完成');
+                return allProducts;
+            }
+            
+            // 获取剩余页面的数据
+            for (let page = 2; page <= totalPages; page++) {
+                // 显示当前进度
+                this.showStatus(`获取进度: 第 ${page}/${totalPages} 页 (${allProducts.length}/${totalCount})`, 'loading');
                 
-                // 调用API获取数据
+                // 请求数据
                 const result = await window.electronAPI.fetchProducts({
-                    page: currentPage,
+                    page: page,
                     pageSize: pageSize,
-                    skcTopStatus: 100  // 在售商品状态
+                    skcTopStatus: 100
                 });
                 
                 if (result.success && result.data) {
-                    const data = result.data;
-                    const pageItems = data.pageItems || [];
-                    
-                    if (currentPage === 1) {
-                        // 第一次请求时获取总数和总页数
-                        totalCount = data.totalCount || 0;
-                        if (totalCount === 0) {
-                            console.log('没有商品数据');
-                            return [];
-                        }
-                        totalPages = Math.ceil(totalCount / pageSize);
-                        console.log(`总商品数: ${totalCount}, 总页数: ${totalPages}, 每页: ${pageSize}`);
-                        
-                        // 如果总数很大，给用户一个提示
-                        if (totalCount > 1000) {
-                            this.showMessage(`检测到 ${totalCount} 件商品，获取全部数据可能需要一些时间，请耐心等待...`, 'info');
-                        }
-                    }
+                    const pageItems = result.data.pageItems || [];
                     
                     if (pageItems.length > 0) {
                         allProducts.push(...pageItems);
+                        console.log(`第${page}页: 获取 ${pageItems.length} 条，累计 ${allProducts.length}/${totalCount}`);
                         
-                        // 更新进度信息
-                        const progress = Math.round((currentPage / totalPages) * 100);
+                        // 更新进度百分比
+                        const progress = Math.round((allProducts.length / totalCount) * 100);
                         this.showStatus(`获取进度: ${progress}% (${allProducts.length}/${totalCount})`, 'loading');
-                        
-                        // 检查是否已获取所有数据
-                        if (currentPage >= totalPages || allProducts.length >= totalCount) {
-                            hasMore = false;
-                        } else {
-                            currentPage++;
-                            // 添加小延迟避免请求过快
-                            await new Promise(resolve => setTimeout(resolve, 200));
-                        }
                     } else {
-                        // 当前页没有数据，停止获取
-                        hasMore = false;
+                        console.log(`第${page}页: 没有数据`);
+                    }
+                    
+                    // 如果已经获取到所有数据，提前结束
+                    if (allProducts.length >= totalCount) {
+                        console.log('已获取所有数据，提前结束');
+                        break;
+                    }
+                    
+                    // 添加小延迟，避免请求过快
+                    if (page < totalPages) {
+                        await new Promise(resolve => setTimeout(resolve, 200));
                     }
                 } else {
-                    throw new Error(result.error || '获取商品数据失败');
+                    console.error(`第${page}页请求失败:`, result.error);
+                    throw new Error(`获取第${page}页数据失败: ${result.error}`);
                 }
             }
             
             console.log(`✅ 成功获取全部商品数据，共 ${allProducts.length} 件`);
             
             // 验证数据完整性
-            if (totalCount > 0 && allProducts.length < totalCount) {
-                console.warn(`警告：实际获取 ${allProducts.length} 件，预期 ${totalCount} 件`);
+            if (allProducts.length !== totalCount) {
+                console.warn(`⚠️ 数据可能不完整：实际获取 ${allProducts.length} 件，预期 ${totalCount} 件`);
+                // 但仍然继续导出已获取的数据
             }
             
             return allProducts;
             
         } catch (error) {
-            console.error('获取全部商品数据失败:', error);
+            console.error('❌ 获取全部商品数据失败:', error);
             throw error;
         }
     }
