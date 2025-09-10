@@ -112,7 +112,7 @@ class ProductsModule {
             if (result.success && result.data) {
                 // 处理API返回的数据结构
                 const pageItems = result.data.pageItems || result.data.records || [];
-                const totalCount = result.data.total || 0;
+                const totalCount = result.data.totalCount || result.data.total || 0;
                 
                 // 调试：打印第一个商品的数据结构
                 if (pageItems.length > 0) {
@@ -122,7 +122,8 @@ class ProductsModule {
                         mainImageUrl: pageItems[0].mainImageUrl,
                         thumbUrl: pageItems[0].productSkuSummaries && pageItems[0].productSkuSummaries[0] && pageItems[0].productSkuSummaries[0].thumbUrl
                     });
-                    console.log('商品总数:', pageItems.length);
+                    console.log('商品总数:', totalCount);
+                    console.log('当前页商品数:', pageItems.length);
                 }
                 
                 // 更新状态

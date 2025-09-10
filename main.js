@@ -775,8 +775,9 @@ ipcMain.handle('fetch-products', async (event, params) => {
                         const data = JSON.parse(responseData);
                         console.log('API响应数据预览:', {
                             success: data.success,
-                            totalRecords: data.result?.total,
-                            currentPage: data.result?.page,
+                            hasResult: !!data.result,
+                            totalCount: data.result?.totalCount || data.result?.total,
+                            pageItemsCount: data.result?.pageItems?.length,
                             recordsCount: data.result?.records?.length
                         });
                         resolve(data);
@@ -799,11 +800,22 @@ ipcMain.handle('fetch-products', async (event, params) => {
         // 处理API响应
         if (response.success && response.result) {
             const result = response.result;
-            console.log(`✅ 成功获取 ${result.pageItems?.length || 0} 条商品数据`);
+            
+            // 适配不同的数据结构
+            // 可能是 pageItems + totalCount 或者 records + total
+            const pageItems = result.pageItems || result.records || [];
+            const totalCount = result.totalCount || result.total || 0;
+            
+            console.log(`✅ 成功获取 ${pageItems.length} 条商品数据，总计 ${totalCount} 条`);
             
             return { 
                 success: true, 
-                data: result  // 直接返回原始结果，包含pageItems和total
+                data: {
+                    pageItems: pageItems,
+                    totalCount: totalCount,
+                    page: result.page || params.page || 1,
+                    pageSize: result.pageSize || params.pageSize || 50
+                }
             };
         } else {
             console.error('API返回错误:', response.errorMsg || '未知错误');
