@@ -24,7 +24,9 @@ TEMU小助手/
 ├── index.html              # 主界面
 ├── main.js                 # 主进程
 ├── preload.js              # 预加载脚本
-├── encoding-fix.js         # Windows 编码修复
+├── encoding-fix.js         # 编码修复工具
+├── start.bat / start.sh    # 跨平台启动脚本（生产模式）
+├── dev.bat / dev.sh        # 跨平台开发启动脚本
 ├── modules/                # 功能模块目录
 │   ├── module-loader.js    # 模块加载器核心
 │   └── products/           # 商品管理模块
@@ -66,10 +68,70 @@ npm start
 npm run dev
 ```
 
-### Windows 用户
-可直接使用提供的批处理文件：
-- `start.bat` - 生产模式启动
-- `dev.bat` - 开发模式启动
+### 跨平台启动方式
+
+#### Windows 用户
+可以使用以下任一方式启动：
+
+**方式1：批处理文件（推荐）**
+```bash
+# 生产模式启动
+start.bat
+
+# 开发模式启动
+dev.bat
+```
+
+**方式2：npm 脚本**
+```bash
+# Windows 专用启动命令
+npm run start:win
+npm run dev:win
+
+# 通用启动命令（自动适配）
+npm start
+npm run dev
+```
+
+#### macOS/Linux 用户
+可以使用以下任一方式启动：
+
+**方式1：Shell脚本（推荐）**
+```bash
+# 确保脚本有执行权限
+chmod +x start.sh dev.sh
+
+# 生产模式启动
+./start.sh
+
+# 开发模式启动
+./dev.sh
+```
+
+**方式2：npm 脚本**
+```bash
+# Unix 专用启动命令
+npm run start:unix
+npm run dev:unix
+
+# 跨平台启动命令（使用cross-env）
+npm run start:cross
+npm run dev:cross
+
+# 通用启动命令（自动适配）
+npm start
+npm run dev
+```
+
+### 启动选项说明
+
+| 启动方式 | 平台 | 特点 | 使用场景 |
+|---------|------|------|----------|
+| `start.bat` / `start.sh` | Windows / macOS/Linux | 自动设置编码，显示系统信息 | 日常使用推荐 |
+| `npm start` | 全平台 | 自动适配平台，使用cross-env处理 | 通用方式 |
+| `npm run start:win` | Windows | Windows专用，设置UTF-8编码 | Windows特定需求 |
+| `npm run start:unix` | macOS/Linux | Unix专用，设置环境变量 | Unix特定需求 |
+| `npm run start:cross` | 全平台 | 使用cross-env设置NODE_OPTIONS | 开发环境推荐 |
 
 ## 使用指南
 
@@ -133,11 +195,66 @@ moduleLoader.registerModule('moduleName', {
 
 ## 注意事项
 
-- Windows 系统已包含控制台编码修复
+### 平台特性
+- **Windows**: 自动设置控制台编码为UTF-8，支持中文显示
+- **macOS/Linux**: 自动配置UTF-8语言环境变量
 - Cookie 信息仅保存在内存中，不会持久化存储
 - 请确保网络连接稳定以保证 API 调用正常
 
+### 故障排除
+
+#### Windows 平台
+1. **中文乱码问题**
+   - 使用 `start.bat` 启动脚本，自动设置编码
+   - 或手动执行: `chcp 65001`
+
+2. **PowerShell 执行策略错误**
+   ```powershell
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+   ```
+
+#### macOS/Linux 平台
+1. **Shell脚本权限问题**
+   ```bash
+   chmod +x start.sh dev.sh
+   ```
+
+2. **UTF-8 环境变量问题**
+   ```bash
+   export LC_ALL=en_US.UTF-8
+   export LANG=en_US.UTF-8
+   ```
+
+3. **Node.js 版本兼容性**
+   - 确保 Node.js 版本 >= 14.0
+   - 推荐使用 LTS 版本
+
+#### 通用问题
+1. **依赖安装失败**
+   ```bash
+   # 清理缓存后重新安装
+   npm cache clean --force
+   npm install
+   ```
+
+2. **应用无法启动**
+   ```bash
+   # 检查 Electron 是否正确安装
+   npx electron --version
+   
+   # 如果未安装，手动安装
+   npm install electron --save-dev
+   ```
+
 ## 更新日志
+
+### v2.1.0 (2025-09-10)
+- 🍎 **新增 macOS 支持**：完整的跨平台兼容性
+- 🐧 **Linux 支持**：支持主流 Linux 发行版
+- 🔧 **跨平台启动脚本**：自动适配不同操作系统
+- 📝 **完善文档**：添加详细的跨平台使用说明
+- 🛠️ **工具增强**：自动编码设置和环境检查
+- 🔄 **多种启动方式**：提供多种启动选项满足不同需求
 
 ### v2.0.0 (2024-09-10)
 - 🎯 全新模块化架构重构
