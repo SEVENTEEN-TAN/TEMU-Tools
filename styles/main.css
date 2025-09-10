@@ -191,12 +191,77 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex: 1;
+}
+
+.footer-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 auto;
 }
 
 .footer-right {
     display: flex;
     align-items: center;
     gap: 10px;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+/* 模块状态指示器 - 公共组件 */
+.module-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+    border-radius: 20px;
+    font-size: 13px;
+    color: #4a5568;
+    transition: all 0.3s ease;
+}
+
+.module-status-indicator.hidden {
+    display: none;
+}
+
+.module-status-indicator .status-icon {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #a0aec0;
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+
+.module-status-indicator.loading .status-icon {
+    background: #3b82f6;
+    animation: pulse 1s infinite;
+}
+
+.module-status-indicator.success .status-icon {
+    background: #10b981;
+    animation: none;
+}
+
+.module-status-indicator.error .status-icon {
+    background: #ef4444;
+    animation: none;
+}
+
+.module-status-indicator.warning .status-icon {
+    background: #f59e0b;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
 }
 
 .connection-status {

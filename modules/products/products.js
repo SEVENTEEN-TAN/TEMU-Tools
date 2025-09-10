@@ -1,5 +1,5 @@
 /**
- * 商品管理模块
+ * 在售商品模块
  * 独立的功能模块，通过模块加载器动态加载
  */
 
@@ -26,7 +26,7 @@ class ProductsModule {
             return;
         }
 
-        console.log('初始化商品管理模块');
+        console.log('初始化在售商品模块');
         
         // 设置全局引用，供分页按钮使用
         window.productsModule = this;
@@ -704,22 +704,34 @@ class ProductsModule {
     }
 
     /**
-     * 显示状态信息
+     * 显示状态信息 - 使用公共状态管理器
      */
-    showStatus(text, type = '') {
-        const statusIndicator = document.getElementById('statusIndicator');
-        const statusText = statusIndicator?.querySelector('.status-text');
-        
-        if (statusIndicator && statusText) {
-            statusText.textContent = text;
-            
-            // 清除之前的状态类
-            statusIndicator.classList.remove('loading', 'success', 'error');
-            
-            // 添加新的状态类
-            if (type) {
-                statusIndicator.classList.add(type);
+    showStatus(text, type = 'info') {
+        // 使用公共状态管理器
+        if (window.statusManager) {
+            // 根据类型调用对应方法
+            switch(type) {
+                case 'loading':
+                    window.statusManager.loading(text);
+                    break;
+                case 'success':
+                    window.statusManager.success(text, 3000);
+                    break;
+                case 'error':
+                    window.statusManager.error(text, 5000);
+                    break;
+                case 'warning':
+                    window.statusManager.warning(text, 4000);
+                    break;
+                default:
+                    window.statusManager.info(text, 3000);
             }
+        }
+        
+        // 兼容：同时更新页面左下角状态文本
+        const footerStatus = document.getElementById('status-text');
+        if (footerStatus) {
+            footerStatus.textContent = text;
         }
     }
 
@@ -744,7 +756,7 @@ class ProductsModule {
      * 模块显示时调用
      */
     show() {
-        console.log('显示商品管理模块');
+        console.log('显示在售商品模块');
         
         // 如果已登录且没有数据，自动加载
         if (window.app && window.app.isLoggedIn()) {
@@ -770,14 +782,14 @@ class ProductsModule {
      * 模块隐藏时调用
      */
     hide() {
-        console.log('隐藏商品管理模块');
+        console.log('隐藏在售商品模块');
     }
 
     /**
      * 模块销毁
      */
     destroy() {
-        console.log('销毁商品管理模块');
+        console.log('销毁在售商品模块');
         // 清理事件监听器等
         this.state = {
             currentPage: 1,

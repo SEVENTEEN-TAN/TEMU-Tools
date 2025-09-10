@@ -20,9 +20,9 @@ function registerModules() {
         useModuleImport: false
     });
     
-    // 商品管理模块
+    // 在售商品模块
     moduleLoader.registerModule('products', {
-        name: '商品管理',
+        name: '在售商品',
         icon: '📦',
         description: '管理在售商品，支持查看和导出',
         path: 'modules/products',
@@ -112,7 +112,7 @@ function registerModules() {
                         
                         <h3 style="margin-top: 30px;">功能模块</h3>
                         <ul style="margin-top: 15px; line-height: 2;">
-                            <li><strong>商品管理</strong>：查看在售商品，支持Excel导出</li>
+                            <li><strong>在售商品</strong>：查看在售商品，支持Excel导出</li>
                             <li><strong>订单管理</strong>：处理订单（开发中）</li>
                             <li><strong>数据分析</strong>：销售报表（开发中）</li>
                             <li><strong>店铺设置</strong>：配置管理（开发中）</li>
@@ -124,7 +124,7 @@ function registerModules() {
                             <p style="margin-top: 10px; color: #718096;">A: 退出登录后重新登录，在站点选择页面选择其他站点。</p>
                             
                             <p style="margin-top: 20px;"><strong>Q: 商品数据多久更新一次？</strong></p>
-                            <p style="margin-top: 10px; color: #718096;">A: 进入商品管理模块时自动获取最新数据，也可手动点击刷新。</p>
+                            <p style="margin-top: 10px; color: #718096;">A: 进入在售商品模块时自动获取最新数据，也可手动点击刷新。</p>
                         </div>
                     </div>
                 </div>

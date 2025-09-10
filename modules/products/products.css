@@ -1,5 +1,5 @@
 /**
- * 商品管理模块样式 - 重新设计版本
+ * 在售商品模块样式 - 重新设计版本
  */
 
 /* 模块容器 - 重新计算高度，避免与页脚重叠 */
@@ -17,72 +17,8 @@
     position: relative;
 }
 
-/* 顶部标题区域 */
-.module-header {
-    flex-shrink: 0;
-    background: white;
-    border-bottom: 1px solid #e1e5e9;
-    padding: 16px 20px;
-    border-radius: 12px 12px 0 0;
-    margin-bottom: 12px;
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-left .module-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: #1a202c;
-    margin: 0 0 4px 0;
-}
-
-.header-left .module-subtitle {
-    font-size: 14px;
-    color: #718096;
-    margin: 0;
-}
-
-/* 状态指示器 */
-.status-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: #f7fafc;
-    border-radius: 20px;
-    border: 1px solid #e2e8f0;
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.status-icon {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #cbd5e0;
-}
-
-.status-indicator.loading .status-icon {
-    background: #3182ce;
-    animation: pulse 1.5s ease-in-out infinite;
-}
-
-.status-indicator.success .status-icon {
-    background: #38a169;
-}
-
-.status-indicator.error .status-icon {
-    background: #e53e3e;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-}
+/* 注意：状态指示器已移至主页面底部，使用公共组件 statusManager */
+/* 模块头部已移除，根据产品负责人要求 */
 
 /* 统计和操作控制栏 */
 .control-bar {
@@ -604,9 +540,8 @@
     gap: 12px;
     margin-top: 12px;
     padding: 12px 20px;
-    background: linear-gradient(135deg, #f6f9fc 0%, #ffffff 100%);
+    /* 移除背景色，保持简洁风格 */
     border-radius: 10px;
-    border: 1px solid #e1e8ed;
 }
 
 .page-size-selector label {
