@@ -213,39 +213,6 @@ function createLoginWindow() {
             console.log('检测到已跳转到site-main页面，开始获取Cookie...');
             console.log('等待用户选择站点区域...');
             
-            // 在页面中注入提示信息
-            loginWindow.webContents.executeJavaScript(`
-                // 创建提示框
-                const alertDiv = document.createElement('div');
-                alertDiv.style.cssText = \`
-                    position: fixed;
-                    top: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    padding: 15px 30px;
-                    border-radius: 10px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-                    z-index: 10000;
-                    font-size: 16px;
-                    font-weight: 500;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                \`;
-                alertDiv.innerHTML = '<span style="font-size: 20px;">⚠️</span><span>请选择"全球/美国"站点进入TEMU</span>';
-                document.body.appendChild(alertDiv);
-                
-                // 5秒后自动消失
-                setTimeout(() => {
-                    alertDiv.style.transition = 'opacity 0.5s';
-                    alertDiv.style.opacity = '0';
-                    setTimeout(() => alertDiv.remove(), 500);
-                }, 5000);
-                
-                console.log('提示：请选择"全球/美国"站点');
-            `);
             
             // 延迟一下确保所有Cookie都已设置
             setTimeout(async () => {
