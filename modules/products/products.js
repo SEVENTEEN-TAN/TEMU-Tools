@@ -238,22 +238,45 @@ class ProductsModule {
     }
 
     /**
-     * 导出Excel
+     * 导出Excel - 导出全部数据
      */
     async exportExcel() {
-        if (this.state.products.length === 0) {
-            this.showMessage('没有可导出的商品数据', 'warning');
+        // 检查登录状态
+        if (!window.app || !window.app.isLoggedIn()) {
+            this.showMessage('请先登录并选择TEMU站点', 'error');
             return;
         }
         
+        const exportBtn = document.getElementById('exportExcelBtn');
+        const btnText = exportBtn?.querySelector('.btn-text');
+        const btnLoading = exportBtn?.querySelector('.btn-loading');
+        
         try {
-            this.showStatus('正在导出Excel...', 'loading');
+            // 禁用按钮并显示加载状态
+            if (exportBtn) {
+                exportBtn.disabled = true;
+                btnText?.classList.add('hidden');
+                btnLoading?.classList.remove('hidden');
+            }
             
-            const result = await window.electronAPI.exportProductsExcel(this.state.products);
+            this.showStatus('正在获取全部商品数据...', 'loading');
+            this.showMessage('开始获取全部商品数据，请稍候...', 'info');
+            
+            // 获取全部商品数据
+            const allProducts = await this.fetchAllProducts();
+            
+            if (allProducts.length === 0) {
+                this.showMessage('没有可导出的商品数据', 'warning');
+                return;
+            }
+            
+            this.showStatus(`正在导出 ${allProducts.length} 件商品...`, 'loading');
+            
+            const result = await window.electronAPI.exportProductsExcel(allProducts);
             
             if (result.success) {
                 this.showStatus('Excel导出成功', 'success');
-                this.showMessage(`Excel文件已保存至：\n${result.path}`, 'success');
+                this.showMessage(`Excel文件已保存至：\n${result.path}\n\n共导出 ${allProducts.length} 件商品`, 'success');
             } else {
                 throw new Error(result.error || '导出失败');
             }
@@ -263,9 +286,97 @@ class ProductsModule {
             this.showStatus('导出失败，请重试', 'error');
             this.showMessage('导出Excel失败：' + error.message, 'error');
         } finally {
+            // 恢复按钮状态
+            if (exportBtn && this.state.products.length > 0) {
+                exportBtn.disabled = false;
+                btnText?.classList.remove('hidden');
+                btnLoading?.classList.add('hidden');
+            }
+            
             setTimeout(() => {
                 this.showStatus('准备就绪');
             }, 3000);
+        }
+    }
+
+    /**
+     * 获取全部商品数据（分页请求）
+     */
+    async fetchAllProducts() {
+        const allProducts = [];
+        const pageSize = 200; // 每页请求200条，减少请求次数
+        let currentPage = 1;
+        let hasMore = true;
+        let totalPages = 1;
+        let totalCount = 0;
+        
+        try {
+            while (hasMore && currentPage <= totalPages) {
+                this.showStatus(`正在获取第 ${currentPage}/${totalPages || '?'} 页数据...`, 'loading');
+                
+                // 调用API获取数据
+                const result = await window.electronAPI.fetchProducts({
+                    page: currentPage,
+                    pageSize: pageSize,
+                    skcTopStatus: 100  // 在售商品状态
+                });
+                
+                if (result.success && result.data) {
+                    const data = result.data;
+                    const pageItems = data.pageItems || [];
+                    
+                    if (currentPage === 1) {
+                        // 第一次请求时获取总数和总页数
+                        totalCount = data.totalCount || 0;
+                        if (totalCount === 0) {
+                            console.log('没有商品数据');
+                            return [];
+                        }
+                        totalPages = Math.ceil(totalCount / pageSize);
+                        console.log(`总商品数: ${totalCount}, 总页数: ${totalPages}, 每页: ${pageSize}`);
+                        
+                        // 如果总数很大，给用户一个提示
+                        if (totalCount > 1000) {
+                            this.showMessage(`检测到 ${totalCount} 件商品，获取全部数据可能需要一些时间，请耐心等待...`, 'info');
+                        }
+                    }
+                    
+                    if (pageItems.length > 0) {
+                        allProducts.push(...pageItems);
+                        
+                        // 更新进度信息
+                        const progress = Math.round((currentPage / totalPages) * 100);
+                        this.showStatus(`获取进度: ${progress}% (${allProducts.length}/${totalCount})`, 'loading');
+                        
+                        // 检查是否已获取所有数据
+                        if (currentPage >= totalPages || allProducts.length >= totalCount) {
+                            hasMore = false;
+                        } else {
+                            currentPage++;
+                            // 添加小延迟避免请求过快
+                            await new Promise(resolve => setTimeout(resolve, 200));
+                        }
+                    } else {
+                        // 当前页没有数据，停止获取
+                        hasMore = false;
+                    }
+                } else {
+                    throw new Error(result.error || '获取商品数据失败');
+                }
+            }
+            
+            console.log(`✅ 成功获取全部商品数据，共 ${allProducts.length} 件`);
+            
+            // 验证数据完整性
+            if (totalCount > 0 && allProducts.length < totalCount) {
+                console.warn(`警告：实际获取 ${allProducts.length} 件，预期 ${totalCount} 件`);
+            }
+            
+            return allProducts;
+            
+        } catch (error) {
+            console.error('获取全部商品数据失败:', error);
+            throw error;
         }
     }
 
