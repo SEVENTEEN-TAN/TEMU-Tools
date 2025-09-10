@@ -11,7 +11,11 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-  "keywords": ["temu", "assistant", "electron"],
+  "keywords": [
+    "temu",
+    "assistant",
+    "electron"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
@@ -30,5 +34,8 @@
     "win": {
       "target": "nsis"
     }
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
   }
 }
