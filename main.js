@@ -729,15 +729,22 @@ ipcMain.handle('fetch-products', async (event, params) => {
                 'Cookie': cookieString,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
                 'Accept': 'application/json',
-                'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+                'Accept-Encoding': 'gzip, deflate, br, zstd',
+                'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en-GB;q=0.7,en;q=0.6',
                 'Origin': 'https://agentseller.temu.com',
-                'Referer': 'https://agentseller.temu.com/',
-                'Sec-Ch-Ua': '"Chromium";v="140", "Not=A?Brand";v="24"',
+                'Referer': 'https://agentseller.temu.com/goods/list',
+                'Sec-Ch-Ua': '"Chromium";v="140", "Not=A?Brand";v="24", "Google Chrome";v="140"',
                 'Sec-Ch-Ua-Mobile': '?0',
                 'Sec-Ch-Ua-Platform': '"Windows"',
                 'Sec-Fetch-Dest': 'empty',
                 'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'same-origin'
+                'Sec-Fetch-Site': 'same-origin',
+                'Cache-Control': 'max-age=0',
+                'Priority': 'u=1, i',
+                // 根据Cookie中的mallid动态设置
+                'mallid': global.temuCookies?.find(c => c.name === 'mallid')?.value || '634418224869329',
+                // anti-content头 - 这是重要的防护头
+                'anti-content': '0aqAfqnygjKyJ9d9Q0yAWSSb4g7gw_fAsC68IwuFr_lqcE5B8bpeD7cu16E1AMW1FS71HCKq62lZVUfQ0UmEdbdw9V0LhxTZZhPOIBHOBGx9rm3V0CnQ0CQ6Sa0YqGVaaVAxVVxJ5E7aN99ubENCAgqxrYmOmelaAF66snUeR9zzMDSbpOLaDLBuWTRha47_xxYMLJ4l0HBWK9_lO1RCZ-yZs8B4UHXHOf7i0YLBVjsvh6_Tb3eT8RCtRCdhFCRaJnySIx92ey-qr4g-O-6RP-lFQmaR9USFSmaUcbZn_5ZKRTcYt67_wvIL07q2HLZvNFHzgmoF2uamefUZOCOJgpQFzWaB0jG1IBt01tSN97uhD6L6trRK8L24i_-Dpc784OPIILeuFgY04JoODvOyelyOKfhzpysak9sMiFzlHM-LurM9utL7TbBeeNENQOFzT-biJCv_W6rwgFtEQwTWjX5OrwEdxJIiGHLH9rH20dXve9NPhRldrQ6l-rC0ye3HRCwBJFXqQ3BoFV8jVQnheqZxDvUDuTz19Dsyq0YrHDzkgWrDcLCBEjoyePeI3LQ1QnzvZlNWoxCbVBukFHnyrNcVA3gGhhEodgSPddmTbaLeo2KGtkP5W8uJvpQuzANQocdvjum6VHoq5o5Q8RdvkF1IgdrUpMkvBjIMznDPNd0EzNG-vltDZb36PLs8LSTHPu4ujlpHZgQJDAHaoa2AeJZzECl4I9V'
             }
         });
         
@@ -792,31 +799,11 @@ ipcMain.handle('fetch-products', async (event, params) => {
         // 处理API响应
         if (response.success && response.result) {
             const result = response.result;
-            console.log(`✅ 成功获取 ${result.records?.length || 0} 条商品数据`);
-            
-            // 格式化商品数据
-            const formattedRecords = (result.records || []).map(product => {
-                return {
-                    productId: product.productId || product.productSkcId,
-                    productName: product.productName || product.productSkcName,
-                    extCode: product.extCode || product.productCode,
-                    salePrice: product.salePrice || product.price,
-                    stock: product.stock || product.totalStock || 0,
-                    status: '在售',
-                    createTime: product.createTime ? 
-                        new Date(product.createTime).toLocaleString('zh-CN') : 
-                        '-'
-                };
-            });
+            console.log(`✅ 成功获取 ${result.pageItems?.length || 0} 条商品数据`);
             
             return { 
                 success: true, 
-                data: {
-                    records: formattedRecords,
-                    total: result.total || 0,
-                    page: result.page || 1,
-                    pageSize: result.pageSize || pageSize
-                }
+                data: result  // 直接返回原始结果，包含pageItems和total
             };
         } else {
             console.error('API返回错误:', response.errorMsg || '未知错误');
@@ -1054,6 +1041,27 @@ app.whenReady().then(async () => {
     // 移除默认菜单栏
     Menu.setApplicationMenu(null);
     
+    // 配置会话安全策略，允许图片加载
+    const ses = session.defaultSession;
+    
+    // 设置最宽松的CSP配置 - 开发环境下允许所有资源
+    ses.webRequest.onHeadersReceived((details, callback) => {
+        const responseHeaders = details.responseHeaders;
+        
+        // 删除所有 CSP 相关的头部，实现最宽松的策略
+        delete responseHeaders['content-security-policy'];
+        delete responseHeaders['Content-Security-Policy'];
+        delete responseHeaders['x-frame-options'];
+        delete responseHeaders['X-Frame-Options'];
+        
+        // 如果需要设置最宽松的 CSP（允许所有来源）
+        // responseHeaders['content-security-policy'] = ["default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; "];
+        
+        callback({ responseHeaders });
+    });
+    
+    console.log('✅ CSP已禁用，允许加载所有外部资源');
+    
     // 清除所有存储的Cookie，确保每次启动都需要重新登录
     console.log('清除所有存储的Cookie...');
     
@@ -1062,7 +1070,7 @@ app.whenReady().then(async () => {
     global.temuCookies = null;      // 分站Cookie
     
     // 清除所有会话Cookie
-    const ses = session.defaultSession;
+    // ses 已经在上面声明过了，直接使用即可
     
     // 清除所有Cookie
     await ses.clearStorageData({
