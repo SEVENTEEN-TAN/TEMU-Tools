@@ -75,6 +75,14 @@ class ProductsModule {
         if (nextBtn) {
             nextBtn.addEventListener('click', () => this.goToPage(this.state.currentPage + 1));
         }
+        
+        // 分页数量选择器
+        const pageSizeSelect = document.getElementById('page-size');
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', (e) => {
+                this.changePageSize(parseInt(e.target.value));
+            });
+        }
     }
 
     /**
@@ -163,9 +171,15 @@ class ProductsModule {
         const pageInfo = document.getElementById('currentPageInfo');
         const updateTime = document.getElementById('lastUpdateTime');
         const tableInfo = document.getElementById('tableProductsInfo');
+        const totalCountDisplay = document.getElementById('total-count'); // 分页选择器中的总数显示
         
         if (totalCount) {
             totalCount.textContent = this.state.totalProducts || '-';
+        }
+        
+        // 更新分页选择器中的总记录数
+        if (totalCountDisplay) {
+            totalCountDisplay.textContent = this.state.totalProducts || '0';
         }
         
         if (pageInfo) {
@@ -466,6 +480,24 @@ class ProductsModule {
     async goToPage(page) {
         if (page >= 1 && page <= this.state.totalPages && page !== this.state.currentPage) {
             this.state.currentPage = page;
+            // 重新获取数据
+            await this.fetchProducts();
+        }
+    }
+
+    /**
+     * 改变每页显示数量
+     */
+    async changePageSize(newSize) {
+        if (newSize !== this.state.pageSize && newSize > 0) {
+            this.state.pageSize = newSize;
+            this.state.currentPage = 1; // 重置到第一页
+            
+            // 重新计算总页数
+            if (this.state.totalProducts > 0) {
+                this.state.totalPages = Math.ceil(this.state.totalProducts / this.state.pageSize);
+            }
+            
             // 重新获取数据
             await this.fetchProducts();
         }

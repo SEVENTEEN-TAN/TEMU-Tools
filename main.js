@@ -837,15 +837,18 @@ ipcMain.handle('export-products-excel', async (event, products) => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('在售商品列表');
         
-        // 设置列
+        // 设置列 - 根据实际的API数据结构调整
         worksheet.columns = [
             { header: '商品ID', key: 'productId', width: 20 },
             { header: '商品名称', key: 'productName', width: 50 },
-            { header: '商品编码', key: 'extCode', width: 20 },
-            { header: '售价(元)', key: 'salePrice', width: 15 },
-            { header: '库存', key: 'stock', width: 12 },
+            { header: '商品编码', key: 'productCode', width: 20 },
+            { header: '分类', key: 'category', width: 20 },
+            { header: 'SKU数量', key: 'skuCount', width: 12 },
+            { header: '价格(元)', key: 'price', width: 15 },
+            { header: '总库存', key: 'totalStock', width: 12 },
             { header: '状态', key: 'status', width: 10 },
-            { header: '创建时间', key: 'createTime', width: 25 }
+            { header: '创建时间', key: 'createTime', width: 25 },
+            { header: '更新时间', key: 'updateTime', width: 25 }
         ];
         
         // 设置表头样式
@@ -865,9 +868,41 @@ ipcMain.handle('export-products-excel', async (event, products) => {
             };
         });
         
-        // 添加数据
+        // 格式化并添加数据
         products.forEach((product, index) => {
-            const row = worksheet.addRow(product);
+            // 解析并格式化商品数据
+            const formattedProduct = {
+                productId: product.productId || product.productSkcId || '-',
+                productName: product.productName || '-',
+                productCode: product.extCode || '-',
+                category: product.leafCat?.catName || 
+                          product.categories?.cat1?.catName || 
+                          '未分类',
+                skuCount: product.productSkuSummaries?.length || 0,
+                price: '-',
+                totalStock: 0,
+                status: '在售',
+                createTime: product.gmtCreate ? 
+                    new Date(product.gmtCreate).toLocaleString('zh-CN') : '-',
+                updateTime: product.gmtModified ? 
+                    new Date(product.gmtModified).toLocaleString('zh-CN') : '-'
+            };
+            
+            // 计算价格和库存
+            if (product.productSkuSummaries && product.productSkuSummaries.length > 0) {
+                // 获取第一个SKU的价格
+                const firstSku = product.productSkuSummaries[0];
+                if (firstSku.supplierPrice) {
+                    formattedProduct.price = (firstSku.supplierPrice / 100).toFixed(2);
+                }
+                
+                // 计算总库存
+                formattedProduct.totalStock = product.productSkuSummaries.reduce((sum, sku) => {
+                    return sum + (sku.virtualStock || 0);
+                }, 0);
+            }
+            
+            const row = worksheet.addRow(formattedProduct);
             
             // 设置行样式
             row.eachCell((cell) => {
@@ -895,8 +930,49 @@ ipcMain.handle('export-products-excel', async (event, products) => {
         // 设置自动筛选
         worksheet.autoFilter = {
             from: { row: 1, column: 1 },
-            to: { row: 1, column: 7 }
+            to: { row: 1, column: 10 }
         };
+        
+        // 添加汇总行
+        const summaryRow = worksheet.addRow({
+            productId: '汇总',
+            productName: `共 ${products.length} 件商品`,
+            productCode: '',
+            category: '',
+            skuCount: products.reduce((sum, p) => sum + (p.productSkuSummaries?.length || 0), 0),
+            price: '',
+            totalStock: products.reduce((sum, p) => {
+                if (p.productSkuSummaries) {
+                    return sum + p.productSkuSummaries.reduce((s, sku) => s + (sku.virtualStock || 0), 0);
+                }
+                return sum;
+            }, 0),
+            status: '',
+            createTime: '',
+            updateTime: `导出时间: ${new Date().toLocaleString('zh-CN')}`
+        });
+        
+        // 设置汇总行样式
+        summaryRow.eachCell((cell) => {
+            cell.font = { bold: true };
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFE6F3FF' }
+            };
+            cell.alignment = { vertical: 'middle' };
+            cell.border = {
+                top: { style: 'medium' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+        });
+        
+        // 冻结首行
+        worksheet.views = [
+            { state: 'frozen', ySplit: 1 }
+        ];
         
         // 显示保存对话框
         const result = await dialog.showSaveDialog(mainWindow, {
