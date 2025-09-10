@@ -7,7 +7,7 @@ class ProductsModule {
     constructor() {
         this.state = {
             currentPage: 1,
-            pageSize: 100,  // 固定为100条
+            pageSize: 50,  // 每页50条商品，更加合理
             totalProducts: 0,
             totalPages: 1,
             products: [],
@@ -27,6 +27,9 @@ class ProductsModule {
         }
 
         console.log('初始化商品管理模块');
+        
+        // 设置全局引用，供分页按钮使用
+        window.productsModule = this;
         
         // 绑定事件
         this.bindEvents();
@@ -91,19 +94,33 @@ class ProductsModule {
             this.updateLoadingState(true);
             this.showStatus('正在获取在售商品数据...', 'loading');
             
-            // 调用API - 固定获取100条在售商品
+            // 调用API - 获取分页商品数据
             const result = await window.electronAPI.fetchProducts({
-                page: 1,
-                pageSize: 100,  // 固定100条
+                page: this.state.currentPage,
+                pageSize: this.state.pageSize,
                 skcTopStatus: 100  // 在售商品状态
             });
             
             if (result.success && result.data) {
+                // 处理API返回的数据结构
+                const pageItems = result.data.pageItems || result.data.records || [];
+                const totalCount = result.data.total || 0;
+                
+                // 调试：打印第一个商品的数据结构
+                if (pageItems.length > 0) {
+                    console.log('=== 商品数据结构调试 ===');
+                    console.log('第一个商品的完整数据:', JSON.stringify(pageItems[0], null, 2));
+                    console.log('图片字段检查:', {
+                        mainImageUrl: pageItems[0].mainImageUrl,
+                        thumbUrl: pageItems[0].productSkuSummaries && pageItems[0].productSkuSummaries[0] && pageItems[0].productSkuSummaries[0].thumbUrl
+                    });
+                    console.log('商品总数:', pageItems.length);
+                }
+                
                 // 更新状态
-                this.state.products = result.data.records || [];
-                this.state.totalProducts = result.data.total || 0;
-                this.state.totalPages = Math.ceil(this.state.totalProducts / this.state.pageSize);
-                this.state.currentPage = 1;
+                this.state.products = pageItems;
+                this.state.totalProducts = totalCount;
+                this.state.totalPages = Math.ceil(totalCount / this.state.pageSize);
                 this.state.lastUpdateTime = new Date();
                 
                 // 更新显示
@@ -112,9 +129,10 @@ class ProductsModule {
                 this.updateStatistics();
                 
                 // 启用导出按钮
-                this.enableExportButton(true);
+                this.enableExportButton(this.state.products.length > 0);
                 
-                this.showStatus(`成功获取 ${this.state.products.length} 件在售商品（共 ${this.state.totalProducts} 件）`, 'success');
+                const currentPageCount = this.state.products.length;
+                this.showStatus(`成功获取第${this.state.currentPage}页商品，共${currentPageCount}件（总计${this.state.totalProducts}件）`, 'success');
             } else {
                 throw new Error(result.error || '获取商品失败');
             }
@@ -144,6 +162,7 @@ class ProductsModule {
         const totalCount = document.getElementById('totalProductsCount');
         const pageInfo = document.getElementById('currentPageInfo');
         const updateTime = document.getElementById('lastUpdateTime');
+        const tableInfo = document.getElementById('tableProductsInfo');
         
         if (totalCount) {
             totalCount.textContent = this.state.totalProducts || '-';
@@ -160,6 +179,12 @@ class ProductsModule {
         if (updateTime) {
             updateTime.textContent = this.state.lastUpdateTime ? 
                 this.formatTime(this.state.lastUpdateTime) : '-';
+        }
+        
+        // 更新表格标题中的商品信息
+        if (tableInfo) {
+            const currentPageCount = this.state.products.length;
+            tableInfo.textContent = `当前页 ${currentPageCount} 件，共 ${this.state.totalProducts} 件商品`;
         }
     }
     
@@ -241,7 +266,7 @@ class ProductsModule {
             // 显示空状态
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 60px 20px; color: #718096;">
+                    <td colspan="9" style="text-align: center; padding: 60px 20px; color: #718096;">
                         <div style="font-size: 48px; margin-bottom: 16px;">📦</div>
                         <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">暂无商品数据</div>
                         <div style="font-size: 14px;">请确认已登录TEMU站点</div>
@@ -251,38 +276,108 @@ class ProductsModule {
             return;
         }
         
-        // 计算当前页显示的商品
-        const startIndex = (this.state.currentPage - 1) * this.state.pageSize;
-        const endIndex = Math.min(startIndex + this.state.pageSize, this.state.totalProducts);
-        const currentPageProducts = this.state.products.slice(startIndex, endIndex);
-        
-        // 生成表格行
-        const rowsHTML = currentPageProducts.map(product => {
-            const productId = product.productId || product.id || '-';
-            const productName = product.productName || product.name || '-';
-            const productCode = product.extCode || product.productCode || product.sku || '-';
-            const price = product.salePrice ? `¥${product.salePrice}` : '-';
-            const stock = product.stock || product.inventory || '-';
-            const status = '在售';
-            const createTime = product.createTime || product.createdAt || '-';
+        // 生成表格行 - 根据API文档的数据结构
+        const rowsHTML = this.state.products.map(product => {
+            // 基本信息
+            const productId = product.productId || product.productSkcId || '-';
+            const productName = product.productName || '-';
+            const productCode = product.extCode || '-';
+            
+            // 分类信息
+            const categoryName = product.leafCat?.catName || 
+                                product.categories?.cat1?.catName || 
+                                '未分类';
+            
+            // 价格信息 - 从SKU中获取价格
+            let price = '-';
+            if (product.productSkuSummaries && product.productSkuSummaries.length > 0) {
+                const firstSku = product.productSkuSummaries[0];
+                if (firstSku.supplierPrice) {
+                    // 价格单位是分，需要转换为元
+                    price = (firstSku.supplierPrice / 100).toFixed(2);
+                }
+            }
+            
+            // 库存信息 - 从SKU中获取总库存
+            let totalStock = 0;
+            if (product.productSkuSummaries && product.productSkuSummaries.length > 0) {
+                totalStock = product.productSkuSummaries.reduce((sum, sku) => {
+                    return sum + (sku.virtualStock || 0);
+                }, 0);
+            }
+            
+            // SKU数量
+            const skuCount = product.productSkuSummaries?.length || 0;
+            
+            // 状态 - 根据skcStatus判断
+            let statusText = '在售';
+            let statusClass = 'active';
+            if (product.skcStatus === 11) {
+                statusText = '在售';
+                statusClass = 'active';
+            } else if (product.skcStatus === 10) {
+                statusText = '待审核';
+                statusClass = 'pending';
+            } else {
+                statusText = '其他';
+                statusClass = 'inactive';
+            }
+            
+            // 创建时间
+            let createTime = '-';
+            if (product.createdAt) {
+                const date = new Date(product.createdAt);
+                createTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            }
+            
+            // 主图URL - 直接使用API返回的mainImageUrl字段
+            const mainImageUrl = product.mainImageUrl || '';
+            
+            // 强化调试 - 为每个商品输出图片信息
+            console.log(`商品 [${productName}] 图片URL:`, mainImageUrl);
+            if (!mainImageUrl) {
+                console.warn(`警告: 商品 [${productName}] 没有主图URL`);
+            }
             
             return `
                 <tr class="table-row">
-                    <td>${productId}</td>
-                    <td class="product-name">
+                    <td class="col-image">
+                        <div class="product-image">
+                            ${mainImageUrl ? 
+                                `<img src="${mainImageUrl}" alt="商品图片" class="product-thumb" loading="lazy">` : 
+                                `<div class="product-thumb-placeholder">📦</div>`
+                            }
+                        </div>
+                    </td>
+                    <td class="col-name">
                         <div class="product-info">
                             <div class="product-details">
-                                <div class="product-title">${productName}</div>
+                                <div class="product-title" title="${productName}">${productName}</div>
+                                <div class="product-id">ID: ${productId}</div>
                             </div>
                         </div>
                     </td>
-                    <td>${productCode}</td>
-                    <td class="price">${price}</td>
-                    <td class="stock">${stock}</td>
-                    <td>
-                        <span class="status-badge active">${status}</span>
+                    <td class="col-category">
+                        <span class="category-name" title="${categoryName}">${categoryName}</span>
                     </td>
-                    <td>${createTime}</td>
+                    <td class="col-code">
+                        <span class="product-code">${productCode}</span>
+                    </td>
+                    <td class="col-price">
+                        <span class="price">${price !== '-' ? '¥' + price : '-'}</span>
+                    </td>
+                    <td class="col-stock">
+                        <span class="stock ${totalStock > 0 ? 'in-stock' : 'out-of-stock'}">${totalStock}</span>
+                    </td>
+                    <td class="col-sku">
+                        <span class="sku-count">${skuCount} 个规格</span>
+                    </td>
+                    <td class="col-status">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </td>
+                    <td class="col-date">
+                        <span class="create-time">${createTime}</span>
+                    </td>
                 </tr>
             `;
         }).join('');
@@ -368,11 +463,11 @@ class ProductsModule {
     /**
      * 跳转到指定页
      */
-    goToPage(page) {
+    async goToPage(page) {
         if (page >= 1 && page <= this.state.totalPages && page !== this.state.currentPage) {
             this.state.currentPage = page;
-            this.updateDisplay();
-            this.updatePagination();
+            // 重新获取数据
+            await this.fetchProducts();
         }
     }
 
@@ -491,7 +586,7 @@ class ProductsModule {
         // 清理事件监听器等
         this.state = {
             currentPage: 1,
-            pageSize: 100,  // 固定为100条
+            pageSize: 50,  // 每页50条商品，更加合理
             totalProducts: 0,
             totalPages: 1,
             products: [],

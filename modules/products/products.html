@@ -1,44 +1,12 @@
-<!-- 商品管理模块 HTML -->
-<div class="products-module">
+<!-- 商品管理模块 HTML --><div class="products-module">
+    <!-- 顶部标题区域 -->
     <div class="module-header">
-        <h2 class="module-title">在售商品管理</h2>
-        <p class="module-subtitle">查看和导出您的在售商品数据</p>
-    </div>
-    
-    <!-- 控制面板 -->
-    <div class="control-panel">
-        <div class="control-panel-wrapper">
-            <div class="control-panel-left">
-                <div class="products-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">商品总数</span>
-                        <span id="totalProductsCount" class="stat-value">-</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">当前页数</span>
-                        <span id="currentPageInfo" class="stat-value">-</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">更新时间</span>
-                        <span id="lastUpdateTime" class="stat-value">-</span>
-                    </div>
-                </div>
-                
-                <div class="action-buttons">
-                    <button id="refreshProductsBtn" class="action-btn primary">
-                        <span class="btn-icon">🔄</span>
-                        <span class="btn-text">刷新数据</span>
-                        <span class="btn-loading hidden"></span>
-                    </button>
-                    
-                    <button id="exportExcelBtn" class="action-btn secondary" disabled>
-                        <span class="btn-icon">📊</span>
-                        <span class="btn-text">导出Excel</span>
-                    </button>
-                </div>
+        <div class="header-content">
+            <div class="header-left">
+                <h2 class="module-title">在售商品管理</h2>
+                <p class="module-subtitle">查看和导出您的在售商品数据</p>
             </div>
-            
-            <div class="control-panel-right">
+            <div class="header-right">
                 <div id="statusIndicator" class="status-indicator">
                     <span class="status-icon"></span>
                     <span class="status-text">正在加载商品数据...</span>
@@ -47,34 +15,77 @@
         </div>
     </div>
     
-    <!-- 商品列表表格 -->
-    <div class="products-table-container">
-        <div class="table-wrapper">
+    <!-- 统计和操作控制栏 -->
+    <div class="control-bar">
+        <div class="stats-section">
+            <div class="stat-card">
+                <span class="stat-label">商品总数</span>
+                <span id="totalProductsCount" class="stat-value">-</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">当前页</span>
+                <span id="currentPageInfo" class="stat-value">-</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">更新时间</span>
+                <span id="lastUpdateTime" class="stat-value">-</span>
+            </div>
+        </div>
+        
+        <div class="actions-section">
+            <button id="refreshProductsBtn" class="action-btn primary">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">刷新数据</span>
+                <span class="btn-loading hidden"></span>
+            </button>
+            
+            <button id="exportExcelBtn" class="action-btn secondary" disabled>
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">导出Excel</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 表格主体区域 -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3 class="table-title">商品列表</h3>
+            <div class="table-info">
+                <span id="tableProductsInfo">共 0 件商品</span>
+            </div>
+        </div>
+        
+        <!-- 表格滚动区域 -->
+        <div class="table-scroll-area">
             <table id="productsTable" class="products-table">
                 <thead>
                     <tr>
-                        <th>商品ID</th>
-                        <th>商品名称</th>
-                        <th>商品编码</th>
-                        <th>价格</th>
-                        <th>库存</th>
-                        <th>状态</th>
-                        <th>创建时间</th>
+                        <th class="col-image">商品</th>
+                        <th class="col-name">商品信息</th>
+                        <th class="col-category">分类</th>
+                        <th class="col-code">编码</th>
+                        <th class="col-price">价格(¥)</th>
+                        <th class="col-stock">库存</th>
+                        <th class="col-sku">SKU数</th>
+                        <th class="col-status">状态</th>
+                        <th class="col-date">创建时间</th>
                     </tr>
                 </thead>
                 <tbody id="productsTableBody">
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 60px 20px; color: #718096;">
-                            <div style="font-size: 48px; margin-bottom: 16px;">📦</div>
-                            <div style="font-size: 16px; font-weight: 500; margin-bottom: 8px;">正在加载商品数据</div>
-                            <div style="font-size: 14px;">请稍候...</div>
+                    <tr class="loading-row">
+                        <td colspan="9">
+                            <div class="loading-placeholder">
+                                <div class="loading-icon">📦</div>
+                                <div class="loading-text">正在加载商品数据</div>
+                                <div class="loading-subtext">请稍候...</div>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         
-        <!-- 加载遮罩 -->
+        <!-- 表格加载遮罩 -->
         <div id="tableLoadingOverlay" class="table-loading-overlay hidden">
             <div class="loading-content">
                 <div class="loading-spinner"></div>
@@ -83,17 +94,17 @@
         </div>
     </div>
     
-    <!-- 分页控制器 -->
-    <div class="pagination-controls">
+    <!-- 底部分页区域 -->
+    <div class="pagination-container">
         <div class="pagination-info">
             <span id="totalProductsInfo">共 0 件商品</span>
             <span class="divider">|</span>
             <span id="pageInfo">第 1 页</span>
         </div>
         
-        <div class="pagination-buttons">
+        <div class="pagination-controls">
             <button id="prevPageBtn" class="page-btn" disabled>
-                <span>上一页</span>
+                <span>‹ 上一页</span>
             </button>
             
             <div id="pageNumbers" class="page-numbers">
@@ -101,7 +112,7 @@
             </div>
             
             <button id="nextPageBtn" class="page-btn" disabled>
-                <span>下一页</span>
+                <span>下一页 ›</span>
             </button>
         </div>
     </div>
