@@ -28,9 +28,26 @@ contextBridge.exposeInMainWorld('electronAPI', {
         });
     },
     
+    // 监听用户信息更新事件
+    onUserInfoUpdate: (callback) => {
+        ipcRenderer.on('user-info-update', (event, userInfo) => {
+            callback(userInfo);
+        });
+    },
+    
     // 移除所有监听器
     removeAllListeners: () => {
         ipcRenderer.removeAllListeners('login-success');
         ipcRenderer.removeAllListeners('site-selected');
-    }
+        ipcRenderer.removeAllListeners('user-info-update');
+    },
+    
+    // 获取商品数据
+    fetchProducts: (params) => ipcRenderer.invoke('fetch-products', params),
+    
+    // 导出商品Excel
+    exportProductsExcel: (products) => ipcRenderer.invoke('export-products-excel', products),
+    
+    // 调试Cookie
+    debugCookies: () => ipcRenderer.invoke('debug-cookies')
 });
