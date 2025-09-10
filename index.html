@@ -2,660 +2,131 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
     <title>TEMU小助手</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
-            background: #f5f6fa;
-            height: 100vh;
-            overflow: hidden;
-        }
-        
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        
-        /* 顶部栏 */
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .app-logo {
-            font-size: 24px;
-        }
-        
-        .app-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .user-info-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.2);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 13px;
-        }
-        
-        .user-avatar {
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #667eea;
-            font-weight: bold;
-        }
-        
-        .logout-btn {
-            background: rgba(255,255,255,0.3);
-            border: 1px solid rgba(255,255,255,0.5);
-            color: white;
-            padding: 6px 15px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s;
-        }
-        
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.4);
-        }
-        
-        /* 主内容区 */
-        .main-content {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-        
-        /* 侧边栏 */
-        .sidebar {
-            width: 200px;
-            background: white;
-            border-right: 1px solid #e0e6ed;
-            padding: 20px 0;
-        }
-        
-        .sidebar-menu {
-            list-style: none;
-        }
-        
-        .sidebar-item {
-            padding: 12px 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-            color: #4a5568;
-            font-size: 14px;
-        }
-        
-        .sidebar-item:hover {
-            background: #f7f8fc;
-            color: #667eea;
-        }
-        
-        .sidebar-item.active {
-            background: linear-gradient(90deg, rgba(102,126,234,0.1) 0%, transparent 100%);
-            color: #667eea;
-            border-left: 3px solid #667eea;
-        }
-        
-        .sidebar-icon {
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-        
-        /* 功能区域 */
-        .content-area {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
-        
-        .content-header {
-            margin-bottom: 25px;
-        }
-        
-        .content-title {
-            font-size: 24px;
-            color: #2d3748;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .content-subtitle {
-            font-size: 14px;
-            color: #718096;
-        }
-        
-        /* 功能卡片网格 */
-        .function-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .function-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 1px solid #e0e6ed;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .function-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transform: translateY(-3px);
-            transition: transform 0.3s;
-        }
-        
-        .function-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        
-        .function-card:hover::before {
-            transform: translateY(0);
-        }
-        
-        .function-icon {
-            font-size: 32px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        .function-name {
-            font-size: 14px;
-            color: #2d3748;
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-        
-        .function-desc {
-            font-size: 12px;
-            color: #a0aec0;
-        }
-        
-        /* 快速操作区 */
-        .quick-actions {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .quick-actions-title {
-            font-size: 16px;
-            color: #2d3748;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-        
-        .quick-action-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .quick-action-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .quick-action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
-        }
-        
-        /* 统计卡片 */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #e0e6ed;
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            color: #718096;
-            margin-bottom: 5px;
-        }
-        
-        .stat-value {
-            font-size: 24px;
-            color: #2d3748;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .stat-change {
-            font-size: 12px;
-            color: #48bb78;
-        }
-        
-        .stat-change.negative {
-            color: #f56565;
-        }
-        
-        /* Cookie状态卡片样式 */
-        .cookie-status-section {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .cookie-status-card {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 15px;
-        }
-        
-        .cookie-status-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .cookie-status-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        .cookie-status-badge {
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .cookie-status-badge.active {
-            background: #48bb78;
-            color: white;
-        }
-        
-        .cookie-status-badge.inactive {
-            background: #cbd5e0;
-            color: #4a5568;
-        }
-        
-        .cookie-info {
-            font-size: 12px;
-            color: #718096;
-        }
-        
-        .cookie-detail {
-            margin-bottom: 5px;
-            word-break: break-all;
-        }
-        
-        .cookie-detail strong {
-            color: #4a5568;
-        }
-        
-        /* 登录页面 */
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .login-box {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 400px;
-            text-align: center;
-        }
-        
-        .login-logo {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-        
-        .login-title {
-            font-size: 28px;
-            color: #2d3748;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        
-        .login-subtitle {
-            font-size: 14px;
-            color: #718096;
-            margin-bottom: 30px;
-        }
-        
-        .login-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 14px 40px;
-            font-size: 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-            width: 100%;
-        }
-        
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/module-loader.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
+    <link rel="stylesheet" href="styles/welcome.css">
 </head>
 <body>
-    <!-- 登录页面 -->
-    <div id="loginPage" class="login-container">
-        <div class="login-box">
-            <div class="login-logo">🛍️</div>
-            <h1 class="login-title">TEMU小助手</h1>
-            <p class="login-subtitle">跨境电商智能管理平台</p>
-            <button id="loginBtn" class="login-btn">
-                <span id="loginBtnText">登录平台</span>
-                <span id="loginBtnLoading" class="loading hidden"></span>
-            </button>
+    <!-- 全屏欢迎页面 -->
+    <div class="welcome-container" id="welcome-container">
+        <div class="welcome-content">
+            <div class="welcome-logo">🛍️</div>
+            <h1 class="welcome-title">欢迎使用 TEMU小助手</h1>
+            <p class="welcome-subtitle">请先登录您的账号，然后选择功能模块开始使用</p>
+            <div class="welcome-actions">
+                <button class="welcome-login-btn" onclick="app.startLogin()">
+                    <span class="btn-icon">🔐</span>
+                    <span class="btn-text">立即登录</span>
+                </button>
+            </div>
         </div>
     </div>
     
-    <!-- 主应用页面 -->
-    <div id="mainApp" class="app-container hidden">
-        <!-- 顶部栏 -->
-        <div class="header">
+    <!-- 主应用容器（初始隐藏） -->
+    <div class="app-container hidden" id="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
             <div class="header-left">
                 <span class="app-logo">🛍️</span>
                 <span class="app-title">TEMU小助手</span>
             </div>
-            <div class="header-right">
-                <div class="user-info-header">
-                    <div class="user-avatar" id="userAvatar">T</div>
-                    <div>
-                        <div id="headerUsername" style="font-weight: 500;">-</div>
-                        <div id="headerShop" style="font-size: 11px; opacity: 0.9;">-</div>
-                    </div>
-                </div>
-                <button id="logoutBtn" class="logout-btn">退出</button>
-            </div>
-        </div>
-        
-        <!-- 主内容区 -->
-        <div class="main-content">
-            <!-- 侧边栏 -->
-            <div class="sidebar">
-                <ul class="sidebar-menu">
-                    <li class="sidebar-item active" data-page="dashboard">
-                        <span class="sidebar-icon">📊</span>
-                        <span>控制台</span>
-                    </li>
-                    <li class="sidebar-item" data-page="orders">
-                        <span class="sidebar-icon">📦</span>
-                        <span>订单管理</span>
-                    </li>
-                    <li class="sidebar-item" data-page="products">
-                        <span class="sidebar-icon">🛒</span>
-                        <span>商品管理</span>
-                    </li>
-                    <li class="sidebar-item" data-page="inventory">
-                        <span class="sidebar-icon">📋</span>
-                        <span>库存管理</span>
-                    </li>
-                    <li class="sidebar-item" data-page="finance">
-                        <span class="sidebar-icon">💰</span>
-                        <span>财务中心</span>
-                    </li>
-                    <li class="sidebar-item" data-page="marketing">
-                        <span class="sidebar-icon">📢</span>
-                        <span>营销推广</span>
-                    </li>
-                    <li class="sidebar-item" data-page="data">
-                        <span class="sidebar-icon">📈</span>
-                        <span>数据分析</span>
-                    </li>
-                    <li class="sidebar-item" data-page="tools">
-                        <span class="sidebar-icon">🔧</span>
-                        <span>实用工具</span>
-                    </li>
-                </ul>
-            </div>
             
-            <!-- 功能区域 -->
+            <div class="header-right">
+                <div id="user-info" class="user-info-header">
+                    <div class="user-avatar" id="user-avatar">S</div>
+                    <div class="user-details">
+                        <span class="user-name" id="user-name">未登录</span>
+                        <span class="shop-id" id="shop-id-display">ID: -</span>
+                    </div>
+                </div>
+                <button id="logout-btn" class="logout-btn">退出</button>
+            </div>
+        </header>
+        
+        <!-- 主内容区 - 左右布局 -->
+        <main class="app-main">
+            <!-- 左侧菜单栏 -->
+            <aside class="app-sidebar" id="app-sidebar">
+                <nav class="sidebar-nav">
+                    <div class="nav-group">
+                        <div class="nav-group-title">主要功能</div>
+                        <ul class="nav-menu" id="nav-menu">
+                            <!-- 动态生成菜单项 -->
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+            
+            <!-- 右侧内容区 -->
             <div class="content-area">
-                <!-- 控制台页面 -->
-                <div id="dashboardPage" class="page-content">
-                    <div class="content-header">
-                        <h2 class="content-title">控制台</h2>
-                        <p class="content-subtitle">欢迎回来，这是您的店铺概览</p>
-                    </div>
-                    
-                    <!-- Cookie状态卡片 -->
-                    <div class="cookie-status-section">
-                        <h3 style="margin: 0 0 15px 0; color: #2d3748; font-size: 16px; font-weight: 600;">🔐 认证状态</h3>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                            <!-- 核心站点Cookie状态 -->
-                            <div class="cookie-status-card">
-                                <div class="cookie-status-header">
-                                    <span class="cookie-status-title">核心站点 (kuajingmaihuo.com)</span>
-                                    <span id="coreCookieStatus" class="cookie-status-badge inactive">未登录</span>
-                                </div>
-                                <div id="coreCookieInfo" class="cookie-info">
-                                    <div class="cookie-detail">暂无Cookie信息</div>
-                                </div>
-                            </div>
-                            
-                            <!-- TEMU站点Cookie状态 -->
-                            <div class="cookie-status-card">
-                                <div class="cookie-status-header">
-                                    <span class="cookie-status-title">TEMU站点 (temu.com)</span>
-                                    <span id="temuCookieStatus" class="cookie-status-badge inactive">未选择</span>
-                                </div>
-                                <div id="temuCookieInfo" class="cookie-info">
-                                    <div class="cookie-detail">暂无Cookie信息</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 切换站点按钮（暂时屏蔽） -->
-                        <!--
-                        <div style="text-align: center; margin-top: 15px;">
-                            <button id="switchSiteBtn" style="
-                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                                color: white;
-                                border: none;
-                                padding: 10px 24px;
-                                border-radius: 8px;
-                                cursor: pointer;
-                                font-size: 14px;
-                                font-weight: 500;
-                                transition: all 0.3s;
-                                box-shadow: 0 4px 10px rgba(102,126,234,0.2);
-                            " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(102,126,234,0.3)';" 
-                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(102,126,234,0.2)';">
-                                🔄 切换站点
-                            </button>
-                        </div>
-                        -->
-                    </div>
-                    
-                    <!-- 统计卡片 -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-label">今日订单</div>
-                            <div class="stat-value">126</div>
-                            <div class="stat-change">↑ 12.5%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">今日销售额</div>
-                            <div class="stat-value">¥18,256</div>
-                            <div class="stat-change">↑ 8.2%</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">待处理订单</div>
-                            <div class="stat-value">23</div>
-                            <div class="stat-change negative">↑ 3 新增</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-label">在线商品</div>
-                            <div class="stat-value">458</div>
-                            <div class="stat-change">→ 持平</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 快速操作 -->
-                    <div class="quick-actions">
-                        <h3 class="quick-actions-title">快速操作</h3>
-                        <div class="quick-action-buttons">
-                            <button class="quick-action-btn">
-                                <span>📦</span>
-                                <span>处理订单</span>
-                            </button>
-                            <button class="quick-action-btn">
-                                <span>➕</span>
-                                <span>上架商品</span>
-                            </button>
-                            <button class="quick-action-btn">
-                                <span>📊</span>
-                                <span>查看报表</span>
-                            </button>
-                            <button class="quick-action-btn">
-                                <span>💬</span>
-                                <span>客户消息</span>
-                            </button>
-                            <button class="quick-action-btn">
-                                <span>🚚</span>
-                                <span>物流查询</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- 功能卡片 -->
-                    <div class="content-header">
-                        <h3 class="quick-actions-title">常用功能</h3>
-                    </div>
-                    <div class="function-grid">
-                        <div class="function-card" data-function="batch-upload">
-                            <span class="function-icon">📤</span>
-                            <div class="function-name">批量上传</div>
-                            <div class="function-desc">批量上传商品</div>
-                        </div>
-                        <div class="function-card" data-function="price-monitor">
-                            <span class="function-icon">💹</span>
-                            <div class="function-name">价格监控</div>
-                            <div class="function-desc">竞品价格追踪</div>
-                        </div>
-                        <div class="function-card" data-function="auto-reply">
-                            <span class="function-icon">🤖</span>
-                            <div class="function-name">自动回复</div>
-                            <div class="function-desc">客服自动化</div>
-                        </div>
-                        <div class="function-card" data-function="export-data">
-                            <span class="function-icon">📥</span>
-                            <div class="function-name">数据导出</div>
-                            <div class="function-desc">导出报表数据</div>
-                        </div>
-                        <div class="function-card" data-function="stock-alert">
-                            <span class="function-icon">🔔</span>
-                            <div class="function-name">库存预警</div>
-                            <div class="function-desc">低库存提醒</div>
-                        </div>
-                        <div class="function-card" data-function="promotion">
-                            <span class="function-icon">🎁</span>
-                            <div class="function-name">促销管理</div>
-                            <div class="function-desc">优惠活动设置</div>
-                        </div>
+                <!-- 模块容器 -->
+                <div class="module-container" id="module-container">
+                    <!-- 模块插槽 - 动态加载的模块内容将插入这里 -->
+                    <div class="module-slot" id="module-slot">
+                        <!-- 模块内容动态加载 -->
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
+        
+        <!-- 状态栏 -->
+        <footer class="app-footer">
+            <div class="footer-left">
+                <span class="status-text" id="status-text">就绪</span>
+            </div>
+            <div class="footer-right">
+                <span class="connection-status" id="connection-status">
+                    <span class="status-dot"></span>
+                    <span>已连接</span>
+                    <!-- Cookie信息悬浮框 -->
+                    <div class="cookie-tooltip" id="cookie-tooltip">
+                        <div class="tooltip-header">🔐 认证状态</div>
+                        <div class="tooltip-content">
+                            <div class="tooltip-item">
+                                <span class="tooltip-label">主站核心Cookie:</span>
+                                <span class="tooltip-value" id="platform-cookie-count">未获取</span>
+                            </div>
+                            <div class="tooltip-item">
+                                <span class="tooltip-label">分站Cookie:</span>
+                                <span class="tooltip-value" id="temu-cookie-count">未获取</span>
+                            </div>
+                            <div class="tooltip-item">
+                                <span class="tooltip-label">当前选择:</span>
+                                <span class="tooltip-value" id="current-site-tooltip">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </span>
+            </div>
+        </footer>
     </div>
     
-    <script src="renderer.js"></script>
+    <!-- 加载核心脚本 -->
+    <script src="modules/module-loader.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/module-registry.js"></script>
+    <script>
+        // 应用初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('应用启动...');
+            
+            // 初始化模块加载器
+            moduleLoader.init('#module-container', '#module-slot');
+            
+            // 初始化应用
+            if (window.app) {
+                window.app.init();
+            }
+            
+            // 注册模块
+            if (window.registerModules) {
+                window.registerModules();
+            }
+        });
+    </script>
 </body>
 </html>
