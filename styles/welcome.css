@@ -1,5 +1,6 @@
 /**
- * 全屏欢迎页面样式 - 白色背景版
+ * Apple风格欢迎页面 - 专业UI设计
+ * 遵循Apple Human Interface Guidelines
  */
 
 .welcome-container {
@@ -8,188 +9,303 @@
     left: 0;
     right: 0;
     bottom: 0;
-    /* 白色背景 */
-    background: #FFFFFF;
+    /* Apple风格的浅色背景系统 */
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    /* 添加纹理感 */
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 131, 131, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(120, 200, 255, 0.03) 0%, transparent 50%);
 }
 
 .welcome-container.hidden {
     opacity: 0;
     pointer-events: none;
+    transform: scale(0.98);
 }
 
 .welcome-content {
     text-align: center;
-    padding: 60px 40px;
-    max-width: 680px;
+    padding: 80px 48px;
+    max-width: 560px;
     width: 100%;
+    /* Apple风格的卡片设计 */
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 24px;
+    box-shadow: 
+        0 4px 32px rgba(0, 0, 0, 0.06),
+        0 1px 3px rgba(0, 0, 0, 0.08);
+    transform: translateY(0px);
+    transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.welcome-content:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 48px rgba(0, 0, 0, 0.08),
+        0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .welcome-logo {
-    font-size: 86px;
-    margin-bottom: 40px;
-    animation: float 3s ease-in-out infinite;
+    font-size: 72px;
+    margin-bottom: 32px;
+    /* Apple风格的微妙动画 */
+    animation: breathe 4s ease-in-out infinite;
     display: inline-block;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-@keyframes float {
+@keyframes breathe {
     0%, 100% {
-        transform: translateY(0px);
+        transform: scale(1) translateY(0px);
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
     }
     50% {
-        transform: translateY(-15px);
+        transform: scale(1.02) translateY(-2px);
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
     }
 }
 
 .welcome-title {
-    font-size: 48px;
-    font-weight: 600;
-    margin-bottom: 24px;
-    line-height: 1.3;
-    font-family: "Microsoft YaHei", "微软雅黑", "Segoe UI", system-ui, sans-serif;
-    color: #1a202c;
-    letter-spacing: -0.5px;
+    /* Apple风格字体系统 - Large Title */
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+    /* SF Pro Display 字体栈，优雅降级 */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    /* Apple系统颜色 - Label */
+    color: #1d1d1f;
+    letter-spacing: -0.6px;
+    /* 优化文本渲染 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 .welcome-subtitle {
-    font-size: 20px;
-    margin-bottom: 50px;
-    line-height: 1.6;
+    /* Apple风格字体系统 - Body */
+    font-size: 19px;
+    margin-bottom: 48px;
+    line-height: 1.47;
     font-weight: 400;
-    font-family: "Microsoft YaHei", "微软雅黑", "Segoe UI", system-ui, sans-serif;
-    color: #4a5568;
-    letter-spacing: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    /* Apple系统颜色 - Secondary Label */
+    color: #6e6e73;
+    letter-spacing: -0.1px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .welcome-actions {
     display: flex;
     justify-content: center;
-    gap: 24px;
+    align-items: center;
+    gap: 16px;
 }
 
 .welcome-login-btn {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    padding: 18px 52px;
-    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+    justify-content: center;
+    gap: 8px;
+    /* Apple风格的按钮尺寸 */
+    padding: 16px 32px;
+    min-width: 180px;
+    height: 56px;
+    /* Apple系统蓝色 - 适配浅色和深色模式 */
+    background: #007AFF;
     color: #FFFFFF;
     border: none;
-    border-radius: 50px;
-    font-size: 18px;
-    font-weight: 500;
+    /* Apple风格圆角 - 更加精致 */
+    border-radius: 14px;
+    /* Apple风格字体 */
+    font-size: 17px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    letter-spacing: -0.2px;
+    /* 高级交互效果 */
     cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
-    font-family: "Microsoft YaHei", "微软雅黑", "Segoe UI", system-ui, sans-serif;
+    transition: all 0.25s cubic-bezier(0.4, 0.0, 0.2, 1);
+    /* Apple风格阴影系统 */
+    box-shadow: 
+        0 4px 14px rgba(0, 122, 255, 0.24),
+        0 1px 3px rgba(0, 0, 0, 0.1);
+    /* 文本渲染优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 防止选择 */
+    user-select: none;
+    -webkit-user-select: none;
+    /* 硬件加速 */
+    transform: translateZ(0);
+    will-change: transform, box-shadow, background-color;
     position: relative;
     overflow: hidden;
 }
 
-.welcome-login-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-}
-
+/* Apple风格的活跃状态 */
 .welcome-login-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-    background: linear-gradient(135deg, #5A67D8 0%, #6B46C1 100%);
-}
-
-.welcome-login-btn:hover::before {
-    left: 100%;
+    background: #0056b3;
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: 
+        0 8px 28px rgba(0, 122, 255, 0.32),
+        0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .welcome-login-btn:active {
-    transform: translateY(-1px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    background: #004494;
+    transform: translateY(-1px) scale(0.98) translateZ(0);
+    box-shadow: 
+        0 2px 8px rgba(0, 122, 255, 0.28),
+        0 1px 3px rgba(0, 0, 0, 0.2);
+    transition-duration: 0.1s;
+}
+
+/* Apple风格的按压反馈 */
+.welcome-login-btn:focus {
+    outline: none;
+    box-shadow: 
+        0 4px 14px rgba(0, 122, 255, 0.24),
+        0 1px 3px rgba(0, 0, 0, 0.1),
+        0 0 0 4px rgba(0, 122, 255, 0.15);
 }
 
 .welcome-login-btn .btn-icon {
-    font-size: 24px;
+    font-size: 20px;
     display: inline-block;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.welcome-login-btn:hover .btn-icon {
+    opacity: 1;
 }
 
 .welcome-login-btn .btn-text {
     font-size: 17px;
-    font-weight: 500;
+    font-weight: 600;
     color: #FFFFFF;
     white-space: nowrap;
+    letter-spacing: -0.2px;
 }
 
-/* 主应用容器动画 */
+/* 移除之前的装饰性元素，采用更简洁的Apple风格 */
+.welcome-container::before,
+.welcome-container::after {
+    display: none;
+}
+
+/* 主应用容器动画 - Apple风格过渡 */
 .app-container {
     opacity: 1;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .app-container.hidden {
     display: none;
 }
 
-/* 添加装饰性元素 */
-.welcome-container::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 70%;
-    height: 70%;
-    background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.welcome-container::after {
-    content: '';
-    position: absolute;
-    bottom: -30%;
-    left: -20%;
-    width: 60%;
-    height: 60%;
-    background: radial-gradient(circle, rgba(118, 75, 162, 0.05) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-/* 响应式设计 */
+/* Apple风格响应式设计 */
 @media (max-width: 768px) {
+    .welcome-content {
+        padding: 60px 32px;
+        max-width: 90%;
+        border-radius: 20px;
+    }
+    
     .welcome-logo {
-        font-size: 72px;
+        font-size: 60px;
+        margin-bottom: 24px;
     }
     
     .welcome-title {
-        font-size: 40px;
+        font-size: 36px;
+        line-height: 1.1;
+        letter-spacing: -0.5px;
     }
     
     .welcome-subtitle {
-        font-size: 18px;
+        font-size: 17px;
+        line-height: 1.5;
+        margin-bottom: 40px;
     }
     
     .welcome-login-btn {
-        padding: 16px 40px;
-        font-size: 18px;
+        padding: 14px 28px;
+        min-width: 160px;
+        height: 52px;
+        font-size: 16px;
     }
 }
 
-/* 高DPI屏幕优化 */
+/* Apple风格高DPI屏幕优化 */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .welcome-content {
+        /* 高DPI屏幕下的更精细渲染 */
+        -webkit-font-smoothing: subpixel-antialiased;
+        -moz-osx-font-smoothing: auto;
+    }
+    
     .welcome-title,
     .welcome-subtitle,
     .welcome-login-btn {
-        -webkit-font-smoothing: subpixel-antialiased;
-        transform: translateZ(0);
-        will-change: transform;
+        /* 优化高分辨率屏幕的文本渲染 */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
     }
+}
+
+/* Apple风格的深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    .welcome-container {
+        background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
+        background-image: 
+            radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 131, 131, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(120, 200, 255, 0.08) 0%, transparent 50%);
+    }
+    
+    .welcome-content {
+        background: rgba(44, 44, 46, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .welcome-title {
+        color: #f2f2f7;
+    }
+    
+    .welcome-subtitle {
+        color: #8e8e93;
+    }
+}
+
+/* Apple风格的动画性能优化 */
+@media (prefers-reduced-motion: reduce) {
+    .welcome-logo {
+        animation: none;
+    }
+    
+    .welcome-content,
+    .welcome-login-btn {
+        transition: none;
+    }
+}
+
+/* Apple风格的焦点管理 */
+.welcome-login-btn:focus-visible {
+    outline: 2px solid #007AFF;
+    outline-offset: 2px;
 }
