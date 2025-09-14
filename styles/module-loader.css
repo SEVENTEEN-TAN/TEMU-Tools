@@ -9,14 +9,15 @@
     flex-direction: column;
     position: relative;
     background: #f5f6fa;
-    overflow: hidden;
+    overflow: auto; /* 直接在容器上处理滚动 */
+    min-height: 0; /* 允许flex收缩 */
 }
 
 /* 模块插槽 */
 .module-slot {
-    flex: 1;
+    flex: 0 1 auto; /* 不使用flex: 1，让内容决定高度 */
     position: relative;
-    overflow: auto;
+    overflow: visible; /* 不在这里滚动 */
     animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -33,7 +34,7 @@
 
 /* 模块内容基础样式 */
 .module-content {
-    min-height: 100%;
+    /* 移除min-height，让内容自然流动 */
     position: relative;
 }
 

@@ -153,13 +153,6 @@ body {
     display: none;
 }
 
-/* 主内容区 */
-.app-main {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-}
-
 /* 侧边栏 */
 .app-sidebar {
     width: 200px;

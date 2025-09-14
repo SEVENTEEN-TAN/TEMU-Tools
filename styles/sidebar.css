@@ -99,7 +99,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    min-height: 0; /* 关键：允许flex子元素收缩 */
     background: #f5f6fa;
 }
 
@@ -107,15 +107,6 @@
 .app-main {
     flex: 1;
     display: flex;
-    overflow: hidden;
-}
-
-/* 模块容器调整 */
-.module-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    position: relative;
     overflow: hidden;
 }
 
