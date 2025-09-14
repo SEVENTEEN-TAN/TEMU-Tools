@@ -509,6 +509,469 @@
     flex: 1;
 }
 
+/* 输入模式切换样式 */
+.input-mode-selector {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 8px;
+}
+
+.toggle-label input[type="checkbox"] {
+    display: none;
+}
+
+.toggle-slider {
+    width: 40px;
+    height: 20px;
+    background: #ccc;
+    border-radius: 20px;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.toggle-slider:before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: all 0.3s;
+}
+
+.toggle-label input:checked + .toggle-slider {
+    background: #3b82f6;
+}
+
+.toggle-label input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+.toggle-text {
+    font-size: 14px;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+/* 输入容器样式 */
+.input-container {
+    margin-bottom: 15px;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+    outline: none;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.form-textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.validation-info.error {
+    color: #ef4444;
+    font-weight: 500;
+}
+
+.validation-info.success {
+    color: #10b981;
+    font-weight: 500;
+}
+
+.query-button-container {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+/* 批量进度展示样式 */
+.batch-progress-section {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.progress-header h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #1f2937;
+}
+
+.progress-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.stat-item .stat-icon {
+    font-size: 16px;
+}
+
+.stat-item .stat-value {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.stat-item .stat-label {
+    color: #6b7280;
+}
+
+.stat-item.success .stat-value {
+    color: #10b981;
+}
+
+.stat-item.failed .stat-value {
+    color: #ef4444;
+}
+
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #3b82f6;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.progress-percentage {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+    min-width: 35px;
+}
+
+.current-operation {
+    text-align: center;
+    font-size: 13px;
+    color: #4b5563;
+    font-style: italic;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+
+/* 活动分组样式 */
+.activity-groups-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.activity-group-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.activity-group-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.activity-group-card.selected {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    background: #f9fafb;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.group-info {
+    flex: 1;
+}
+
+.group-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.group-type-badge {
+    background: #3b82f6;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.group-name {
+    font-size: 16px;
+    color: #1f2937;
+    margin: 0;
+}
+
+.group-stats {
+    display: flex;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.group-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.group-checkbox {
+    cursor: pointer;
+}
+
+.group-checkbox input {
+    display: none;
+}
+
+.group-checkbox .checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #d1d5db;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.group-checkbox input:checked + .checkmark {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.group-checkbox input:checked + .checkmark:after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.expand-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.expand-btn:hover {
+    background: #e5e7eb;
+}
+
+.expand-icon {
+    transition: transform 0.3s;
+}
+
+.expand-btn.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.group-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    display: none;
+}
+
+.group-content.expanded {
+    display: block !important;
+}
+
+.group-items-container {
+    padding: 10px 15px 15px;
+}
+
+.group-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background: #f9fafb;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+}
+
+.group-item:hover {
+    background: #f3f4f6;
+}
+
+.item-product-info {
+    flex: 1;
+}
+
+.product-name {
+    display: block;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.product-spu {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.item-activity-info {
+    flex: 1;
+    text-align: center;
+}
+
+.enroll-id {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.activity-price {
+    font-size: 13px;
+    color: #ef4444;
+    font-weight: 500;
+}
+
+.item-controls {
+    width: 40px;
+    text-align: center;
+}
+
+.item-checkbox {
+    cursor: pointer;
+}
+
+.item-checkbox input {
+    display: none;
+}
+
+.item-checkbox .checkmark {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.item-checkbox input:checked + .checkmark {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.item-checkbox input:checked + .checkmark:after {
+    content: '✓';
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.batch-controls {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: #f9fafb;
+    border-radius: 6px;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.selection-summary {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: normal;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     .activities-container {

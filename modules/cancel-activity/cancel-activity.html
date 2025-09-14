@@ -11,10 +11,41 @@
         <!-- 步骤1：输入商品SPU -->
         <div class="step-section">
             <h3 class="step-title">步骤1：输入商品SPU</h3>
-            <div class="input-group">
-                <label for="product-spu">商品SPU：</label>
-                <input type="text" id="product-spu" placeholder="请输入商品SPU，例如：4975750079" class="form-input">
+            
+            <div class="input-mode-selector">
+                <label class="toggle-label">
+                    <input type="checkbox" id="batch-mode-toggle">
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-text">批量模式</span>
+                </label>
+            </div>
+            
+            <!-- 单个模式（保持兼容） -->
+            <div id="single-input-container" class="input-container">
+                <div class="input-group">
+                    <label for="product-spu">商品SPU：</label>
+                    <input type="text" id="product-spu" placeholder="请输入商品SPU，例如：4975750079" class="form-input">
+                </div>
+            </div>
+            
+            <!-- 批量模式 -->
+            <div id="batch-input-container" class="input-container" style="display:none;">
+                <div class="input-group">
+                    <label for="batch-product-spu">批量商品SPU：</label>
+                    <textarea id="batch-product-spu" 
+                              placeholder="请输入多个SPU，用逗号分隔，例如：4975750079,4975750080,4975750081" 
+                              class="form-textarea" 
+                              rows="4"></textarea>
+                    <div class="input-stats">
+                        <span id="spu-count">识别到 0 个SPU</span>
+                        <span id="spu-validation" class="validation-info"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="query-button-container">
                 <button id="query-activities-btn" class="btn btn-primary">查询活动</button>
+                <button id="clear-results-btn" class="btn btn-secondary">重置结果</button>
             </div>
         </div>
 
@@ -40,6 +71,27 @@
             </div>
         </div>
 
+        <!-- 步骤3：选择要取消的活动组（批量模式） -->
+        <div class="step-section" id="activities-groups-section" style="display: none;">
+            <h3 class="step-title">
+                步骤3：选择要取消的活动组
+                <span class="selection-summary" id="selection-summary"></span>
+            </h3>
+            
+            <div class="batch-controls">
+                <div class="control-buttons">
+                    <button id="expand-all-btn" class="btn btn-sm">展开全部</button>
+                    <button id="collapse-all-btn" class="btn btn-sm">收起全部</button>
+                    <button id="select-all-groups-btn" class="btn btn-sm btn-primary">全选</button>
+                    <button id="clear-all-groups-btn" class="btn btn-sm">清空选择</button>
+                </div>
+            </div>
+            
+            <div class="activity-groups-container" id="activity-groups-container">
+                <!-- 动态生成分组内容 -->
+            </div>
+        </div>
+
         <!-- 步骤4：填写取消理由 -->
         <div class="step-section" id="cancel-reason-section" style="display: none;">
             <h3 class="step-title">步骤4：填写取消理由</h3>
@@ -53,6 +105,43 @@
                     <button id="submit-cancel-btn" class="btn btn-danger">确认取消活动</button>
                     <button id="reset-btn" class="btn btn-secondary">重置</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- 批量操作进度展示 -->
+        <div class="batch-progress-section" id="batch-progress-section" style="display: none;">
+            <div class="progress-header">
+                <h4>批量操作进度</h4>
+                <button class="btn btn-sm btn-secondary" id="cancel-batch-btn">取消操作</button>
+            </div>
+            
+            <div class="progress-info">
+                <div class="progress-stats">
+                    <span class="stat-item success">
+                        <span class="stat-icon">✅</span>
+                        <span class="stat-value" id="progress-success">0</span>
+                        <span class="stat-label">成功</span>
+                    </span>
+                    <span class="stat-item failed">
+                        <span class="stat-icon">❌</span>
+                        <span class="stat-value" id="progress-failed">0</span>
+                        <span class="stat-label">失败</span>
+                    </span>
+                    <span class="stat-item total">
+                        <span class="stat-icon">📊</span>
+                        <span class="stat-value" id="progress-total">0</span>
+                        <span class="stat-label">总数</span>
+                    </span>
+                </div>
+                
+                <div class="progress-bar-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+                    </div>
+                    <span class="progress-percentage" id="progress-percentage">0%</span>
+                </div>
+                
+                <div class="current-operation" id="current-operation">准备开始...</div>
             </div>
         </div>
 
