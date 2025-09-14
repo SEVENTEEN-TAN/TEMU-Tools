@@ -166,6 +166,7 @@
     padding: 15px;
     transition: all 0.3s;
     cursor: pointer;
+    position: relative; /* 添加相对定位，作为悬浮窗的定位参考 */
 }
 
 .activity-card:hover {
@@ -213,6 +214,7 @@
 
 .activity-body {
     margin-bottom: 12px;
+    position: relative; /* 添加相对定位 */
 }
 
 .activity-info {
@@ -241,7 +243,95 @@
     color: #ef4444;
 }
 
-/* 站点信息 */
+/* 站点摘要信息 */
+.sites-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f0f9ff;
+    border-radius: 6px;
+    margin-top: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.sites-summary:hover {
+    background: #e0f2fe;
+}
+
+.summary-icon {
+    font-size: 16px;
+}
+
+.summary-text {
+    font-size: 13px;
+    color: #0369a1;
+    font-weight: 500;
+}
+
+.hover-hint {
+    font-size: 11px;
+    color: #64748b;
+    margin-left: auto;
+}
+
+/* 站点悬浮窗 */
+.sites-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.sites-summary:hover + .sites-tooltip {
+    display: block;
+}
+
+.sites-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid white;
+}
+
+.sites-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 49px;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 9px solid #e2e8f0;
+}
+
+.sites-tooltip .tooltip-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+/* 保留原有的站点列表样式，用于悬浮窗 */
 .sites-info {
     background: #f9fafb;
     border-radius: 6px;

@@ -224,9 +224,14 @@ class CancelActivityModule {
             return date.toLocaleDateString('zh-CN');
         };
         
-        // 创建站点信息
-        let sitesInfo = '';
+        // 创建站点悬浮信息
+        let sitesHoverInfo = '';
+        let sitesSummary = '';
         if (enrollInfo.enrollSessions && enrollInfo.enrollSessions.length > 0) {
+            // 计算活跃站点数量
+            const activeSites = enrollInfo.enrollSessions.filter(s => s.sessionStatus === 2).length;
+            const totalSites = enrollInfo.enrollSessions.length;
+            
             const sitesList = enrollInfo.enrollSessions.map(session => {
                 const statusMap = {
                     1: '待开始',
@@ -247,9 +252,19 @@ class CancelActivityModule {
                 `;
             }).join('');
             
-            sitesInfo = `
-                <div class="sites-info">
-                    <div class="sites-header">参与站点：</div>
+            // 创建站点摘要信息
+            sitesSummary = `
+                <div class="sites-summary">
+                    <span class="summary-icon">🌐</span>
+                    <span class="summary-text">参与站点: ${activeSites}/${totalSites}</span>
+                    <span class="hover-hint">悬停查看详情</span>
+                </div>
+            `;
+            
+            // 创建悬浮窗内容
+            sitesHoverInfo = `
+                <div class="sites-tooltip">
+                    <div class="tooltip-header">参与站点详情</div>
                     <div class="sites-list">${sitesList}</div>
                 </div>
             `;
@@ -278,7 +293,8 @@ class CancelActivityModule {
                         <span class="info-value">${formatDate(enrollInfo.enrollTime)}</span>
                     </div>
                 </div>
-                ${sitesInfo}
+                ${sitesSummary}
+                ${sitesHoverInfo}
             </div>
             <div class="activity-footer">
                 <button class="select-activity-btn" onclick="cancelActivityModule.selectActivity('${enrollInfo.enrollId}', '${activity.activityName}')">
