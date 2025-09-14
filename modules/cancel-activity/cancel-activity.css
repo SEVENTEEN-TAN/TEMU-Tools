@@ -1,0 +1,440 @@
+/* 取消活动模块样式 */
+.cancel-activity-module {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* 移除高度设置，让内容自然流动 */
+}
+
+.module-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.module-header h2 {
+    font-size: 24px;
+    color: #1f2937;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.module-description {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.module-content {
+    padding: 20px 0;
+}
+
+/* 步骤部分 */
+.step-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.step-title {
+    font-size: 16px;
+    color: #374151;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* 输入组 */
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: #4b5563;
+    min-width: 80px;
+}
+
+.form-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.form-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 按钮样式 */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+}
+
+/* 商品信息卡片 */
+.product-info-card {
+    display: flex;
+    gap: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.product-image {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.product-details {
+    flex: 1;
+}
+
+.product-details h4 {
+    font-size: 16px;
+    color: #1f2937;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.product-id {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* 活动容器 */
+.activities-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 15px;
+}
+
+/* 活动卡片 */
+.activity-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.activity-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.activity-card.selected {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.activity-name {
+    font-size: 15px;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.activity-type-badge {
+    background: #3b82f6;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.activity-id {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.activity-body {
+    margin-bottom: 12px;
+}
+
+.activity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.info-label {
+    color: #6b7280;
+}
+
+.info-value {
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.info-value.price {
+    color: #ef4444;
+}
+
+/* 站点信息 */
+.sites-info {
+    background: #f9fafb;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.sites-header {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.sites-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.site-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.site-name {
+    color: #1f2937;
+    font-weight: 500;
+    min-width: 60px;
+}
+
+.session-status {
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.status-active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-inactive {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.session-date {
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+.activity-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.select-activity-btn {
+    padding: 6px 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.select-activity-btn:hover {
+    background: #2563eb;
+}
+
+.activity-card.selected .select-activity-btn {
+    background: #10b981;
+}
+
+.activity-card.selected .select-activity-btn:hover {
+    background: #059669;
+}
+
+/* 取消理由部分 */
+.reason-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.reason-input-group label {
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.form-textarea {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.form-textarea:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* 状态提示 */
+.status-section {
+    margin-top: 20px;
+}
+
+.status-message {
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.status-message:empty {
+    display: none;
+}
+
+.status-loading {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+.status-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #86efac;
+}
+
+.status-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.status-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.status-info {
+    background: #e0e7ff;
+    color: #3730a3;
+    border: 1px solid #a5b4fc;
+}
+
+.status-icon {
+    font-size: 16px;
+}
+
+.status-text {
+    flex: 1;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .activities-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-info-card {
+        flex-direction: column;
+    }
+    
+    .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .input-group label {
+        min-width: auto;
+    }
+}

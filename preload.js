@@ -48,6 +48,24 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // 导出商品Excel
     exportProductsExcel: (products) => ipcRenderer.invoke('export-products-excel', products),
     
+    // 查询商品活动
+    queryProductActivities: (params) => ipcRenderer.invoke('queryProductActivities', params),
+    
+    // 取消活动
+    cancelActivity: (params) => ipcRenderer.invoke('cancelActivity', params),
+    
+    // 通用请求方法 - 兼容旧的调用方式
+    request: (method, params) => {
+        switch(method) {
+            case 'queryProductActivities':
+                return ipcRenderer.invoke('queryProductActivities', params);
+            case 'cancelActivity':
+                return ipcRenderer.invoke('cancelActivity', params);
+            default:
+                return Promise.reject(new Error(`Unknown method: ${method}`));
+        }
+    },
+    
     // 调试Cookie
     debugCookies: () => ipcRenderer.invoke('debug-cookies')
 });

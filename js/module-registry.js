@@ -34,6 +34,20 @@ function registerModules() {
         useModuleImport: false
     });
     
+    // 取消活动模块
+    moduleLoader.registerModule('cancel-activity', {
+        name: '取消活动',
+        icon: '🚫',
+        description: '查询商品活动并取消活动',
+        path: 'modules/cancel-activity',
+        htmlFile: 'cancel-activity.html',
+        cssFile: 'cancel-activity.css',
+        jsFile: 'cancel-activity.js',
+        requiresAuth: true,
+        loadPriority: 2,
+        useModuleImport: false
+    });
+    
     // 订单管理模块（示例）
     moduleLoader.registerModule('orders', {
         name: '订单管理',
@@ -41,7 +55,7 @@ function registerModules() {
         description: '查看和处理订单',
         path: 'modules/orders',
         requiresAuth: true,
-        loadPriority: 2,
+        loadPriority: 3,
         // 如果模块不存在，将显示占位内容
         render: async () => {
             return `
@@ -60,7 +74,7 @@ function registerModules() {
         description: '销售数据分析和报表',
         path: 'modules/analytics',
         requiresAuth: true,
-        loadPriority: 3,
+        loadPriority: 4,
         render: async () => {
             return `
                 <div style="padding: 40px; text-align: center;">
@@ -78,7 +92,7 @@ function registerModules() {
         description: '管理店铺配置和设置',
         path: 'modules/settings',
         requiresAuth: true,
-        loadPriority: 4,
+        loadPriority: 5,
         render: async () => {
             return `
                 <div style="padding: 40px; text-align: center;">
@@ -96,7 +110,7 @@ function registerModules() {
         description: '使用指南和常见问题',
         path: 'modules/help',
         requiresAuth: false,  // 不需要登录即可访问
-        loadPriority: 5,
+        loadPriority: 6,
         render: async () => {
             return `
                 <div style="padding: 40px;">

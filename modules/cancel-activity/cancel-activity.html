@@ -1,0 +1,64 @@
+<!-- 取消活动模块 -->
+<div class="cancel-activity-module">
+    <div class="module-header">
+        <h2>🚫 取消活动</h2>
+        <div class="module-description">
+            <p>输入商品SPU，查看并取消该商品正在参与的活动</p>
+        </div>
+    </div>
+
+    <div class="module-content">
+        <!-- 步骤1：输入商品SPU -->
+        <div class="step-section">
+            <h3 class="step-title">步骤1：输入商品SPU</h3>
+            <div class="input-group">
+                <label for="product-spu">商品SPU：</label>
+                <input type="text" id="product-spu" placeholder="请输入商品SPU，例如：4975750079" class="form-input">
+                <button id="query-activities-btn" class="btn btn-primary">查询活动</button>
+            </div>
+        </div>
+
+        <!-- 步骤2：显示商品信息和活动列表 -->
+        <div class="step-section" id="product-info-section" style="display: none;">
+            <h3 class="step-title">步骤2：商品信息</h3>
+            <div class="product-info-card">
+                <div class="product-image">
+                    <img id="product-image" src="" alt="商品图片">
+                </div>
+                <div class="product-details">
+                    <h4 id="product-name"></h4>
+                    <p class="product-id">SPU: <span id="product-id-display"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 步骤3：选择要取消的活动 -->
+        <div class="step-section" id="activities-section" style="display: none;">
+            <h3 class="step-title">步骤3：选择要取消的活动</h3>
+            <div class="activities-container" id="activities-container">
+                <!-- 活动列表将动态生成 -->
+            </div>
+        </div>
+
+        <!-- 步骤4：填写取消理由 -->
+        <div class="step-section" id="cancel-reason-section" style="display: none;">
+            <h3 class="step-title">步骤4：填写取消理由</h3>
+            <div class="reason-input-group">
+                <label for="cancel-reason">取消理由：</label>
+                <textarea id="cancel-reason" 
+                          placeholder="请输入取消活动的理由" 
+                          class="form-textarea" 
+                          rows="3">申请退出</textarea>
+                <div class="action-buttons">
+                    <button id="submit-cancel-btn" class="btn btn-danger">确认取消活动</button>
+                    <button id="reset-btn" class="btn btn-secondary">重置</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作状态提示 -->
+        <div class="status-section">
+            <div id="operation-status" class="status-message"></div>
+        </div>
+    </div>
+</div>

@@ -717,7 +717,7 @@ ipcMain.handle('fetch-products', async (event, params) => {
     }
     
     try {
-        // 构建Cookie字符串
+        // 构建Cookie字符串 - 使用分站Cookie（TEMU）
         const cookieString = global.temuCookies.map(c => `${c.name}=${c.value}`).join('; ');
         
         // 构建请求
@@ -1021,6 +1021,265 @@ ipcMain.handle('export-products-excel', async (event, products) => {
         return { 
             success: false, 
             error: error.message || '导出失败' 
+        };
+    }
+});
+
+// 查询商品活动列表
+ipcMain.handle('queryProductActivities', async (event, params) => {
+    const { productId } = params;
+    
+    console.log('\n=====================================');
+    console.log('开始查询商品活动...');
+    console.log(`商品SPU: ${productId}`);
+    console.log('=====================================\n');
+    
+    // 检查主站Cookie (因为API是主站的)
+    if (!global.platformCookies) {
+        console.error('未找到主站Cookie');
+        return { 
+            success: false, 
+            error: '请先登录并选择站点' 
+        };
+    }
+    
+    // 检查mallId
+    const mallId = global.savedUserInfo?.mallId;
+    if (!mallId) {
+        console.error('未找到店铺ID');
+        return { 
+            success: false, 
+            error: '未找到店铺信息，请重新登录' 
+        };
+    }
+    
+    try {
+        const { net } = require('electron');
+        
+        // 构建Cookie字符串 - 使用主站Cookie
+        const cookieString = global.platformCookies.map(c => `${c.name}=${c.value}`).join('; ');
+        
+        // 准备请求数据
+        const requestData = {
+            productId: productId.toString()
+        };
+        
+        // 构建请求URL
+        const url = 'https://seller.kuajingmaihuo.com/marvel-mms/cn/api/kiana/gambit/marketing/enroll/feedback/queryValidActivity4FeedBackOffline';
+        
+        // 准备请求头
+        const headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Content-Type': 'application/json',
+            'Origin': 'https://seller.kuajingmaihuo.com',
+            'Referer': 'https://seller.kuajingmaihuo.com/',
+            'Cookie': cookieString,
+            'mallid': mallId.toString()
+        };
+        
+        console.log('发送请求到:', url);
+        console.log('请求数据:', requestData);
+        
+        // 发送请求
+        const request = net.request({
+            method: 'POST',
+            url: url,
+            headers: headers
+        });
+        
+        return new Promise((resolve, reject) => {
+            let responseData = '';
+            
+            request.on('response', (response) => {
+                console.log(`响应状态码: ${response.statusCode}`);
+                
+                response.on('data', (chunk) => {
+                    responseData += chunk.toString();
+                });
+                
+                response.on('end', () => {
+                    try {
+                        const parsedData = JSON.parse(responseData);
+                        console.log('API响应:', JSON.stringify(parsedData, null, 2));
+                        
+                        if (parsedData.success && parsedData.result) {
+                            console.log(`✅ 成功获取商品活动信息`);
+                            resolve({ 
+                                success: true, 
+                                data: parsedData
+                            });
+                        } else {
+                            console.error('API返回错误:', parsedData.errorMsg || '未知错误');
+                            resolve({ 
+                                success: false, 
+                                error: parsedData.errorMsg || '查询活动失败' 
+                            });
+                        }
+                    } catch (error) {
+                        console.error('解析响应失败:', error);
+                        resolve({ 
+                            success: false, 
+                            error: '解析响应数据失败' 
+                        });
+                    }
+                });
+            });
+            
+            request.on('error', (error) => {
+                console.error('请求失败:', error);
+                resolve({ 
+                    success: false, 
+                    error: error.message || '网络请求失败' 
+                });
+            });
+            
+            // 发送请求数据
+            request.write(JSON.stringify(requestData));
+            request.end();
+        });
+        
+    } catch (error) {
+        console.error('查询商品活动失败:', error);
+        return { 
+            success: false, 
+            error: error.message || '查询失败' 
+        };
+    }
+});
+
+// 取消活动
+ipcMain.handle('cancelActivity', async (event, params) => {
+    const { productId, enrollId, activityName, remark } = params;
+    
+    console.log('\n=====================================');
+    console.log('开始取消活动...');
+    console.log(`商品SPU: ${productId}`);
+    console.log(`活动名称: ${activityName}`);
+    console.log(`报名ID: ${enrollId}`);
+    console.log(`取消理由: ${remark}`);
+    console.log('=====================================\n');
+    
+    // 检查主站Cookie (因为API是主站的)
+    if (!global.platformCookies) {
+        console.error('未找到主站Cookie');
+        return { 
+            success: false, 
+            error: '请先登录并选择站点' 
+        };
+    }
+    
+    // 检查mallId
+    const mallId = global.savedUserInfo?.mallId;
+    if (!mallId) {
+        console.error('未找到店铺ID');
+        return { 
+            success: false, 
+            error: '未找到店铺信息，请重新登录' 
+        };
+    }
+    
+    try {
+        const { net } = require('electron');
+        
+        // 构建Cookie字符串 - 使用主站Cookie
+        const cookieString = global.platformCookies.map(c => `${c.name}=${c.value}`).join('; ');
+        
+        // 准备请求数据
+        const requestData = {
+            feedbackType: 8,
+            feedbackProblemType: 44,
+            remark: remark || '申请退出',
+            businessId: parseInt(enrollId),
+            feedbackDimension: 1,
+            productId: productId.toString(),
+            activityName: activityName
+        };
+        
+        // 构建请求URL
+        const url = 'https://seller.kuajingmaihuo.com/marvel-mms/cn/api/kiana/ultraman/FeedbackMmsExecuteRpcService/submitFeedback';
+        
+        // 准备请求头
+        const headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+            'Content-Type': 'application/json',
+            'Origin': 'https://seller.kuajingmaihuo.com',
+            'Referer': 'https://seller.kuajingmaihuo.com/',
+            'Cookie': cookieString,
+            'mallid': mallId.toString()
+        };
+        
+        console.log('发送请求到:', url);
+        console.log('请求数据:', requestData);
+        
+        // 发送请求
+        const request = net.request({
+            method: 'POST',
+            url: url,
+            headers: headers
+        });
+        
+        return new Promise((resolve, reject) => {
+            let responseData = '';
+            
+            request.on('response', (response) => {
+                console.log(`响应状态码: ${response.statusCode}`);
+                
+                response.on('data', (chunk) => {
+                    responseData += chunk.toString();
+                });
+                
+                response.on('end', () => {
+                    try {
+                        const parsedData = JSON.parse(responseData);
+                        console.log('API响应:', JSON.stringify(parsedData, null, 2));
+                        
+                        if (parsedData.success) {
+                            console.log(`✅ 成功取消活动: ${activityName}`);
+                            resolve({ 
+                                success: true, 
+                                data: parsedData
+                            });
+                        } else {
+                            console.error('API返回错误:', parsedData.errorMsg || '未知错误');
+                            resolve({ 
+                                success: false, 
+                                error: parsedData.errorMsg || '取消活动失败' 
+                            });
+                        }
+                    } catch (error) {
+                        console.error('解析响应失败:', error);
+                        resolve({ 
+                            success: false, 
+                            error: '解析响应数据失败' 
+                        });
+                    }
+                });
+            });
+            
+            request.on('error', (error) => {
+                console.error('请求失败:', error);
+                resolve({ 
+                    success: false, 
+                    error: error.message || '网络请求失败' 
+                });
+            });
+            
+            // 发送请求数据
+            request.write(JSON.stringify(requestData));
+            request.end();
+        });
+        
+    } catch (error) {
+        console.error('取消活动失败:', error);
+        return { 
+            success: false, 
+            error: error.message || '取消失败' 
         };
     }
 });
